@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBookingPlatform.API", "TravelAndAccommodationBookingPlatform.API\TravelAndAccommodationBookingPlatform.API.csproj", "{9BD64A3F-3909-4F9C-8039-A29DF78CCED5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBookingPlatform.Domain", "TravelAndAccommodationBookingPlatform.Domain\TravelAndAccommodationBookingPlatform.Domain.csproj", "{990B4F2B-DFB1-40EF-8249-36A0B439CE14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBookingPlatform.Db", "TravelAndAccommodationBookingPlatform.Db\TravelAndAccommodationBookingPlatform.Db.csproj", "{D7A66DDA-CC6E-41F6-8D86-D8AFD5D3993E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBookingPlatform.CompositionRoot", "TravelAndAccommodationBookingPlatform.CompositionRoot\TravelAndAccommodationBookingPlatform.CompositionRoot.csproj", "{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BD64A3F-3909-4F9C-8039-A29DF78CCED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BD64A3F-3909-4F9C-8039-A29DF78CCED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BD64A3F-3909-4F9C-8039-A29DF78CCED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BD64A3F-3909-4F9C-8039-A29DF78CCED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{990B4F2B-DFB1-40EF-8249-36A0B439CE14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{990B4F2B-DFB1-40EF-8249-36A0B439CE14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{990B4F2B-DFB1-40EF-8249-36A0B439CE14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{990B4F2B-DFB1-40EF-8249-36A0B439CE14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A66DDA-CC6E-41F6-8D86-D8AFD5D3993E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A66DDA-CC6E-41F6-8D86-D8AFD5D3993E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A66DDA-CC6E-41F6-8D86-D8AFD5D3993E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A66DDA-CC6E-41F6-8D86-D8AFD5D3993E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
