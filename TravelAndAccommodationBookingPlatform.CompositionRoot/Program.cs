@@ -1,7 +1,9 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TravelAndAccommodationBookingPlatform.Db.DbContext;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
 
@@ -17,6 +19,10 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddDbContext<TravelAndAccommodationBookingPlatformDbContext>(
+            dbContext => dbContext.UseNpgsql(builder.Configuration["ConnectionStrings:constr"])
+            );
         
         builder.Services.AddApiVersioning(
             setupAction =>

@@ -12,6 +12,8 @@
   <component name="ChangeListManager">
     <list default="true" id="5ebd11fb-0729-480b-93c2-6dc29a9d62e0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.TravelAndAccommodationBookingPlatform/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.TravelAndAccommodationBookingPlatform/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelAndAccommodationBookingPlatform.Db/TravelAndAccommodationBookingPlatform.Db.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/TravelAndAccommodationBookingPlatform.Db/TravelAndAccommodationBookingPlatform.Db.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelAndAccommodationBookingPlatform.Domain/TravelAndAccommodationBookingPlatform.Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/TravelAndAccommodationBookingPlatform.Domain/TravelAndAccommodationBookingPlatform.Domain.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,11 +29,13 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="SWEA" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2qcY8DPvkyLOjrEVb5hOI9OzdiH" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -41,7 +45,7 @@
     ".NET Launch Settings Profile.TravelAndAccommodationBookingPlatform.CompositionRoot: http.executor": "Run",
     ".NET Launch Settings Profile.TravelAndAccommodationBookingPlatform.CompositionRoot: https.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "database-setup",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -90,7 +94,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1734963168644</updated>
-      <workItem from="1734963169847" duration="6350000" />
+      <workItem from="1734963169847" duration="16973000" />
+      <workItem from="1735116738056" duration="19270000" />
     </task>
     <servers />
   </component>
