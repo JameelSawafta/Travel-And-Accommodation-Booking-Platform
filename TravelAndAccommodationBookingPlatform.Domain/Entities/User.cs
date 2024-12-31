@@ -11,6 +11,12 @@ public class User
     [MaxLength(50)]
     public string Username { get; set; }
     [Required]
+    [MaxLength(50)]
+    public string FirstName { get; set; }
+    [Required]
+    [MaxLength(50)]
+    public string LastName { get; set; }
+    [Required]
     public string PasswordHash { get; set; }
     [Required]
     [EmailAddress]
