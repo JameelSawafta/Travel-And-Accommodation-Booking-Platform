@@ -26,5 +26,5 @@ public class User
     [Required]
     [Phone]
     public string? PhoneNumber { get; set; }
-    public Guid Salt { get; set; } = Guid.NewGuid();
+    public String Salt { get; set; } 
 }
