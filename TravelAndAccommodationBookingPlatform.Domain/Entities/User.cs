@@ -23,7 +23,6 @@ public class User
     public string Email { get; set; }
     [Required]
     public UserRole Role { get; set; } = 0;
-    [Required]
     [Phone]
     public string? PhoneNumber { get; set; }
     public String Salt { get; set; } 
