@@ -25,6 +25,10 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
             .HasIndex(u => u.Username)
             .IsUnique();
         
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+        
         base.OnModelCreating(modelBuilder);
     }
 }
