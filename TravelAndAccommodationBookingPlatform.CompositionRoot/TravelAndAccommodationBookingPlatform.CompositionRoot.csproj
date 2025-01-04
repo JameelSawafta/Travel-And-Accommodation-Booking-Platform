@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PasswordHashing\PasswordHashing.csproj" />
+      <ProjectReference Include="..\TokenGenerator\TokenGenerator.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.API\TravelAndAccommodationBookingPlatform.API.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.Db\TravelAndAccommodationBookingPlatform.Db.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.Domain\TravelAndAccommodationBookingPlatform.Domain.csproj" />

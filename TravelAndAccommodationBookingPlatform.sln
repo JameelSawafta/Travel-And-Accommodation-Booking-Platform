@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBooki
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndAccommodationBookingPlatform.CompositionRoot", "TravelAndAccommodationBookingPlatform.CompositionRoot\TravelAndAccommodationBookingPlatform.CompositionRoot.csproj", "{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordHashing", "PasswordHashing\PasswordHashing.csproj", "{7A2D2F03-A637-453F-AAE7-77913B5069B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenGenerator", "TokenGenerator\TokenGenerator.csproj", "{4B7D587C-9A4D-4C4C-9A26-16AC95333BCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,13 @@ Global
 		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B88EB8DD-DB4D-4693-86DB-C2DB38C4A482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A2D2F03-A637-453F-AAE7-77913B5069B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A2D2F03-A637-453F-AAE7-77913B5069B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A2D2F03-A637-453F-AAE7-77913B5069B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A2D2F03-A637-453F-AAE7-77913B5069B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B7D587C-9A4D-4C4C-9A26-16AC95333BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B7D587C-9A4D-4C4C-9A26-16AC95333BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B7D587C-9A4D-4C4C-9A26-16AC95333BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B7D587C-9A4D-4C4C-9A26-16AC95333BCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

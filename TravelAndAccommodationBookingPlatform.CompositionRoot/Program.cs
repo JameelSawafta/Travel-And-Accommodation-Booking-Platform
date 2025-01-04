@@ -1,12 +1,23 @@
 using System.Text;
 using Asp.Versioning;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using PasswordHashing;
+using TokenGenerator;
+using TravelAndAccommodationBookingPlatform.API.Controllers;
+using TravelAndAccommodationBookingPlatform.API.Middlewares;
+using TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
+using TravelAndAccommodationBookingPlatform.Db.Repositories;
+using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
+using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
+using TravelAndAccommodationBookingPlatform.Domain.Profiles;
+using TravelAndAccommodationBookingPlatform.Domain.Services;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
 
@@ -33,7 +44,7 @@ public class Program
         
         // Add services to the container.
         builder.Services.AddAuthorization();
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddApplicationPart(typeof(AuthenticationController).Assembly);
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -54,7 +65,20 @@ public class Program
             }
         );
         
+        builder.Services.AddHttpContextAccessor();
+        
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ITokenGeneratorService, JwtGeneratorService>();
+        builder.Services.AddScoped<IPasswordService, Argon2PasswordService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
+        
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        
+        
         var app = builder.Build();
+        
+        app.UseMiddleware<CustomExceptionHandlingMiddleware>();
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -64,6 +88,8 @@ public class Program
         app.UseHttpsRedirection();
         
         app.UseRouting();
+        
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
