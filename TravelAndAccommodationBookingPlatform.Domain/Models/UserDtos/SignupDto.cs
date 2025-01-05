@@ -1,3 +1,5 @@
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
+
 namespace TravelAndAccommodationBookingPlatform.Domain.Models.UserDtos;
 
 public class SignupDto
@@ -7,5 +9,6 @@ public class SignupDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
+    public UserRole? Role { get; set; }
     public string? PhoneNumber { get; set; }
 }
