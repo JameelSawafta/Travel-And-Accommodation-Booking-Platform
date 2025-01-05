@@ -5,5 +5,6 @@
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::435193A3-819B-40E1-9992-32BCC0994CEC::net8.0::TravelAndAccommodationBookingPlatform.Tests.Services.AuthServiceTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::435193A3-819B-40E1-9992-32BCC0994CEC::net8.0::TravelAndAccommodationBookingPlatform.Tests.Services.Argon2PasswordServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::435193A3-819B-40E1-9992-32BCC0994CEC::net8.0::TravelAndAccommodationBookingPlatform.Tests.Services.JwtGeneratorServiceTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

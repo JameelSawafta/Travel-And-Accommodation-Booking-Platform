@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PasswordHashing\PasswordHashing.csproj" />
+      <ProjectReference Include="..\TokenGenerator\TokenGenerator.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.Domain\TravelAndAccommodationBookingPlatform.Domain.csproj" />
     </ItemGroup>
 
