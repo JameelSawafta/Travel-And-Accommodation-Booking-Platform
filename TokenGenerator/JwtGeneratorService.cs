@@ -25,15 +25,14 @@ public class JwtGeneratorService : ITokenGeneratorService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretForKey"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var clientIp = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
-        
+        var clientIp = _httpContextAccessor?.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown";        
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim("UserId", userId.ToString()),
             new Claim("Role", role.ToString()),
-            new Claim("ClientIp", clientIp ?? "Unknown")
+            new Claim("ClientIp", clientIp)
         };
 
         var token = new JwtSecurityToken(
