@@ -3,13 +3,13 @@ using Microsoft.Extensions.Configuration;
 using PasswordHashing;
 using Xunit;
 
-namespace TravelAndAccommodationBookingPlatform.Tests.Services;
+namespace TravelAndAccommodationBookingPlatform.Tests.UnitTests.Services;
 
-public class Argon2PasswordServiceTests
+public class Argon2PasswordServiceUnitTests
 {
     private readonly Argon2PasswordService _passwordService;
 
-    public Argon2PasswordServiceTests()
+    public Argon2PasswordServiceUnitTests()
     {
         var inMemorySettings = new Dictionary<string, string>
         {

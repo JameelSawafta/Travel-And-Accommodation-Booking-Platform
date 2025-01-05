@@ -7,13 +7,13 @@ using Xunit;
 using TokenGenerator;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 
-namespace TravelAndAccommodationBookingPlatform.Tests.Services;
+namespace TravelAndAccommodationBookingPlatform.Tests.UnitTests.Services;
 
-public class JwtGeneratorServiceTests
+public class JwtGeneratorServiceUnitTests
 {
     private readonly JwtGeneratorService _jwtGeneratorService;
 
-    public JwtGeneratorServiceTests()
+    public JwtGeneratorServiceUnitTests()
     {
         var inMemorySettings = new Dictionary<string, string>
         {

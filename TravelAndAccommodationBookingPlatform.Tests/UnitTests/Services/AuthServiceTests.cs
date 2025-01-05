@@ -8,9 +8,9 @@ using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.UserDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
-namespace TravelAndAccommodationBookingPlatform.Tests.Services;
+namespace TravelAndAccommodationBookingPlatform.Tests.UnitTests.Services;
 
-public class AuthServiceTests
+public class AuthServiceUnitTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IPasswordService> _passwordServiceMock;
@@ -18,7 +18,7 @@ public class AuthServiceTests
     private readonly Mock<IMapper> _mapperMock;
     private readonly AuthService _authService;
 
-    public AuthServiceTests()
+    public AuthServiceUnitTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
         _passwordServiceMock = new Mock<IPasswordService>();
