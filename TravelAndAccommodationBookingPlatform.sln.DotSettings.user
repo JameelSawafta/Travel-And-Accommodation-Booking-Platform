@@ -4,5 +4,6 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=824b0f66_002D6fb1_002D433e_002D9b49_002D74eafc8370cf/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="LoginAsync_ShouldReturnToken_WhenValidCredentials" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::435193A3-819B-40E1-9992-32BCC0994CEC::net8.0::TravelAndAccommodationBookingPlatform.Tests.Services.AuthServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::435193A3-819B-40E1-9992-32BCC0994CEC::net8.0::TravelAndAccommodationBookingPlatform.Tests.Services.Argon2PasswordServiceTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
