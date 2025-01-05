@@ -61,28 +61,4 @@ public class AuthServiceUnitTests
 
         await Assert.ThrowsAsync<AuthenticationFailedException>(() => _authService.LoginAsync(loginDto));
     }
-    
-    [Fact]
-    public async Task SignupAsync_ShouldReturnUserResponse_WhenUserIsCreated()
-    {
-        var signupDto = new SignupDto { Username = "newuser", Password = "password" };
-        var user = new User { UserId = Guid.NewGuid(), Username = "newuser", Role = UserRole.User };
-        var userResponse = new UserCreationResponseDto {Username = user.Username, Token = "valid_token" };
-
-        _userRepositoryMock.Setup(r => r.GetUserByUsernameAsync(signupDto.Username))
-            .ReturnsAsync((User?)null);
-        _mapperMock.Setup(m => m.Map<User>(signupDto)).Returns(user);
-        _passwordServiceMock.Setup(p => p.GenerateSalt()).Returns(new byte[] { 1, 2, 3 });
-        _passwordServiceMock.Setup(p => p.GenerateHashedPassword(signupDto.Password, It.IsAny<byte[]>()))
-            .Returns("hashedpassword");
-        _userRepositoryMock.Setup(r => r.CreateUserAsync(user)).Returns(Task.CompletedTask);
-        _tokenGeneratorServiceMock.Setup(t => t.GenerateToken(user.UserId, user.Username, user.Role))
-            .Returns("valid_token");
-        _mapperMock.Setup(m => m.Map<UserCreationResponseDto>(user)).Returns(userResponse);
-
-        var result = await _authService.SignupAsync(signupDto);
-
-        Assert.Equal(userResponse, result);
-    }
-
 }

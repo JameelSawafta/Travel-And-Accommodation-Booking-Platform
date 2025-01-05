@@ -52,7 +52,6 @@ public class AuthServiceIntegrationTests
         var mapperConfig = new MapperConfiguration(cfg =>
         {
             cfg.CreateMap<SignupDto, User>();
-            cfg.CreateMap<User, UserCreationResponseDto>();
         });
         var mapper = mapperConfig.CreateMapper();
 
@@ -60,16 +59,18 @@ public class AuthServiceIntegrationTests
     }
 
     [Fact]
-    public async Task SignupAsync_ShouldCreateUserAndReturnResponse()
+    public async Task SignupAsync_ShouldCreateUser()
     {
         var signupDto = new SignupDto { Username = "testuser", Password = "Password@123", Role = UserRole.User, FirstName = "Test", LastName = "User", Email = "test@gmail.com"};
 
-        var result = await _authService.SignupAsync(signupDto);
+        await _authService.SignupAsync(signupDto);
+        
+        var dbContext = new TravelAndAccommodationBookingPlatformDbContext(_dbOptions);
+        var result = await dbContext.Users.FirstOrDefaultAsync(u => u.Username == signupDto.Username);
 
         Assert.NotNull(result);
         Assert.Equal(signupDto.Username, result.Username);
         Assert.Equal(signupDto.Role, result.Role);
-        Assert.NotNull(result.Token);
     }
 
     [Fact]

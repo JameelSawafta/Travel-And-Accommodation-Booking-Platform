@@ -46,11 +46,14 @@ public class AuthService : IAuthService
             return token;
         }
 
-        public async Task<UserCreationResponseDto> SignupAsync(SignupDto signupDto)
+        public async Task SignupAsync(SignupDto signupDto)
         {
             if (await _userRepository.GetUserByUsernameAsync(signupDto.Username) != null)
-                throw new ConflictException("User already exists");
-
+                throw new ConflictException("User with this Username already exists");
+            
+            if (await _userRepository.GetUserByEmailAsync(signupDto.Email) != null)
+                throw new ConflictException("User with this Email already exists");
+            
             var user = _mapper.Map<User>(signupDto);
 
             user.Salt = Convert.ToBase64String(_argon2PasswordService.GenerateSalt());
@@ -58,12 +61,5 @@ public class AuthService : IAuthService
             user.PasswordHash = _argon2PasswordService.GenerateHashedPassword(signupDto.Password, saltBytes);
 
             await _userRepository.CreateUserAsync(user);
-
-            var token = _jwtGeneratorService.GenerateToken(user.UserId, user.Username, user.Role);
-
-            var userResponse = _mapper.Map<UserCreationResponseDto>(user);
-            userResponse.Token = token;
-
-            return userResponse;
         }
     }

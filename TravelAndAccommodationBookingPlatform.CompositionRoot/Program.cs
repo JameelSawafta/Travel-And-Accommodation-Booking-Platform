@@ -44,7 +44,7 @@ public class Program
         
         // Add services to the container.
         builder.Services.AddAuthorization();
-        builder.Services.AddControllers().AddApplicationPart(typeof(AuthenticationController).Assembly);
+        builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
