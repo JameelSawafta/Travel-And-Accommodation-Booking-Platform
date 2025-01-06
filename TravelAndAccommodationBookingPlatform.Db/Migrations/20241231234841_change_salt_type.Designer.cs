@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
@@ -11,9 +12,11 @@ using TravelAndAccommodationBookingPlatform.Db.DbContext;
 namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 {
     [DbContext(typeof(TravelAndAccommodationBookingPlatformDbContext))]
-    partial class TravelAndAccommodationBookingPlatformDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241231234841_change_salt_type")]
+    partial class change_salt_type
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,6 +289,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Role")
@@ -301,9 +305,6 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.HasIndex("Username")
                         .IsUnique();

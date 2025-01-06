@@ -5,7 +5,7 @@ using TravelAndAccommodationBookingPlatform.Domain.Enums;
 namespace TravelAndAccommodationBookingPlatform.Domain.Entities;
 
 public class Booking
-{
+{   
     [Key]
     public Guid BookingId { get; set; } = Guid.NewGuid();
     [Required]

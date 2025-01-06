@@ -7,8 +7,15 @@
         <OutputType>Library</OutputType>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>..\TravelAndAccommodationBookingPlatform.CompositionRoot\bin\Debug\net8.0\TravelAndAccommodationBookingPlatform.CompositionRoot.xml</DocumentationFile>
+    </PropertyGroup>
+
+
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
@@ -19,10 +26,6 @@
 
     <ItemGroup>
       <None Remove="Properties\launchSettings.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
     </ItemGroup>
 
 </Project>
