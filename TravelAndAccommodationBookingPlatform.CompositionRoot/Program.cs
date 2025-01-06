@@ -48,7 +48,12 @@ public class Program
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+        });
 
         builder.Services.AddDbContext<TravelAndAccommodationBookingPlatformDbContext>(
             dbContext => dbContext.UseNpgsql(builder.Configuration["ConnectionStrings:constr"])
@@ -68,8 +73,8 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<ITokenGeneratorService, JwtGeneratorService>();
-        builder.Services.AddScoped<IPasswordService, Argon2PasswordService>();
+        builder.Services.AddTransient<ITokenGeneratorService, JwtGeneratorService>();
+        builder.Services.AddTransient<IPasswordService, Argon2PasswordService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
