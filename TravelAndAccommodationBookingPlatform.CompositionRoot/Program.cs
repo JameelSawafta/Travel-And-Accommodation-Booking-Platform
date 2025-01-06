@@ -14,6 +14,7 @@ using TravelAndAccommodationBookingPlatform.API.Middlewares;
 using TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Profiles;
@@ -43,7 +44,18 @@ public class Program
             });
         
         // Add services to the container.
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy =>
+                policy.RequireClaim("Role", UserRole.Admin.ToString()));
+        
+            options.AddPolicy("UserOrAdmin", policy =>
+                policy.RequireAssertion(context =>
+                    context.User.HasClaim(c => 
+                        c.Type == "Role" && 
+                        (c.Value == UserRole.Admin.ToString() || c.Value == UserRole.User.ToString()))));
+        });
+
         builder.Services.AddControllers().AddApplicationPart(typeof(AuthController).Assembly);
         
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
