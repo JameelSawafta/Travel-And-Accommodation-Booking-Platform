@@ -8,7 +8,7 @@ public class City
     public Guid CityId { get; set; } = Guid.NewGuid();
     [Required]
     [MaxLength(100)]
-    public string Name { get; set; }
+    public string CityName { get; set; }
     [Required]
     [MaxLength(100)]
     public string Country { get; set; }

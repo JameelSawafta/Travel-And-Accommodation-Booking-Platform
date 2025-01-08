@@ -10,7 +10,7 @@ public class Hotel
     public Guid CityId { get; set; }
     [Required]
     [MaxLength(100)]
-    public string Name { get; set; }
+    public string HotelName { get; set; }
     [MaxLength(500)]
     public string Description { get; set; }
     [Required]
