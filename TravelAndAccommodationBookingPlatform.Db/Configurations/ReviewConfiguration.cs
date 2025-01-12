@@ -9,18 +9,18 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
 {
     public void Configure(EntityTypeBuilder<Review> builder)
     {
-        builder.HasKey(r => r.ReviewID);
-        builder.Property(r => r.UserID).IsRequired();
-        builder.Property(r => r.HotelID).IsRequired();
+        builder.HasKey(r => r.ReviewId);
+        builder.Property(r => r.UserId).IsRequired();
+        builder.Property(r => r.HotelId).IsRequired();
         builder.Property(r => r.Rating).IsRequired();
         builder.Property(r => r.Comment).HasMaxLength(500);
 
         builder.HasOne(r => r.User)
             .WithMany(u => u.Reviews)
-            .HasForeignKey(r => r.UserID);
+            .HasForeignKey(r => r.UserId);
 
         builder.HasOne(r => r.Hotel)
             .WithMany(h => h.Reviews)
-            .HasForeignKey(r => r.HotelID);
+            .HasForeignKey(r => r.HotelId);
     }
 }

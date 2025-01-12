@@ -12,13 +12,12 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Discount> Discounts { get; set; }
-    public DbSet<HotelDiscount> HotelDiscounts { get; set; }
     public DbSet<RoomDiscount> RoomDiscounts { get; set; }
     public DbSet<Amenity> Amenities { get; set; }
-    public DbSet<HotelAmenity> HotelAmenities { get; set; }
     public DbSet<RoomAmenity> RoomAmenities { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Owner> Owners { get; set; }
+    public DbSet<Image> Images { get; set; }
     
     public TravelAndAccommodationBookingPlatformDbContext(DbContextOptions<TravelAndAccommodationBookingPlatformDbContext> options) : base(options)
     {

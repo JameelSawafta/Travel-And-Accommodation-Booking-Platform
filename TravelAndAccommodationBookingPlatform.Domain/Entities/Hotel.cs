@@ -11,11 +11,12 @@ public class Hotel
     public Guid OwnerId { get; set; }
     public string PhoneNumber { get; set; }
     public string Address { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public string? ThumbnailUrl { get; set; }
 
     public City City { get; set; }
     public Owner Owner { get; set; }
     public ICollection<Room> Rooms { get; set; }
-    public ICollection<HotelAmenity> HotelAmenities { get; set; }
-    public ICollection<HotelDiscount> HotelDiscounts { get; set; }
     public ICollection<Review> Reviews { get; set; }
 }

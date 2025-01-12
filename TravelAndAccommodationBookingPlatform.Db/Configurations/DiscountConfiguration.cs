@@ -10,8 +10,7 @@ public class DiscountConfiguration : IEntityTypeConfiguration<Discount>
     {
         builder.HasKey(d => d.DiscountId);
         builder.Property(d => d.Description).HasMaxLength(500);
-        builder.Property(d => d.DiscountType).HasConversion<int>().IsRequired();
-        builder.Property(d => d.DiscountValue).IsRequired();
+        builder.Property(d => d.DiscountPercentageValue).IsRequired().HasColumnType("decimal(3,2)");
         builder.Property(d => d.ValidFrom).IsRequired().HasColumnType("timestamp");;
         builder.Property(d => d.ValidTo).IsRequired().HasColumnType("timestamp");;
     }

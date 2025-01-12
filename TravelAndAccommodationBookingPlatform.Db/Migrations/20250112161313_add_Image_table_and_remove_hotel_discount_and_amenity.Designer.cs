@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
@@ -11,9 +12,11 @@ using TravelAndAccommodationBookingPlatform.Db.DbContext;
 namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 {
     [DbContext(typeof(TravelAndAccommodationBookingPlatformDbContext))]
-    partial class TravelAndAccommodationBookingPlatformDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250112161313_add_Image_table_and_remove_hotel_discount_and_amenity")]
+    partial class add_Image_table_and_remove_hotel_discount_and_amenity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +27,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Amenity", b =>
                 {
-                    b.Property<Guid>("AmenityId")
+                    b.Property<Guid>("AmenityID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -37,7 +40,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("AmenityId");
+                    b.HasKey("AmenityID");
 
                     b.ToTable("Amenities");
                 });
@@ -118,8 +121,11 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<double>("DiscountPercentageValue")
-                        .HasColumnType("decimal(3,2)");
+                    b.Property<int>("DiscountType")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("DiscountValue")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("ValidFrom")
                         .HasColumnType("timestamp");
@@ -155,12 +161,6 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("double precision");
-
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
@@ -170,10 +170,6 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
                     b.Property<int>("StarRating")
                         .HasColumnType("integer");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
 
                     b.HasKey("HotelId");
 
@@ -269,7 +265,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Review", b =>
                 {
-                    b.Property<Guid>("ReviewId")
+                    b.Property<Guid>("ReviewID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -277,20 +273,20 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<Guid>("HotelId")
+                    b.Property<Guid>("HotelID")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ReviewId");
+                    b.HasKey("ReviewID");
 
-                    b.HasIndex("HotelId");
+                    b.HasIndex("HotelID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Reviews");
                 });
@@ -496,13 +492,13 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                 {
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", "Hotel")
                         .WithMany("Reviews")
-                        .HasForeignKey("HotelId")
+                        .HasForeignKey("HotelID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.User", "User")
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

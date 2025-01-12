@@ -3,9 +3,9 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Entities;
 
 public class Review
 {
-    public Guid ReviewID { get; set; } = Guid.NewGuid();
-    public Guid UserID { get; set; }
-    public Guid HotelID { get; set; }
+    public Guid ReviewId { get; set; } = Guid.NewGuid();
+    public Guid UserId { get; set; }
+    public Guid HotelId { get; set; }
     public int Rating { get; set; }
     public string? Comment { get; set; }
 

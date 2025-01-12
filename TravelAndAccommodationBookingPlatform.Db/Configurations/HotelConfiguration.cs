@@ -15,6 +15,9 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
         builder.Property(h => h.OwnerId).IsRequired();
         builder.Property(h => h.PhoneNumber).IsRequired();
         builder.Property(h => h.Address).IsRequired().HasMaxLength(200);
+        builder.Property(h => h.Latitude).IsRequired();
+        builder.Property(h => h.Longitude).IsRequired();
+        builder.Property(h => h.ThumbnailUrl).HasMaxLength(200);
 
         builder.HasOne(h => h.City)
             .WithMany(c => c.Hotels)
