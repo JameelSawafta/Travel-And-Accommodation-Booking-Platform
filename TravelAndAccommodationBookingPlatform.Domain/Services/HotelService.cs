@@ -41,4 +41,48 @@ public class HotelService : IHotelService
         return new PaginatedList<HotelSearchResultDto>(result, pageData);
     }
     
+    
+    public async Task<List<FeaturedDealDto>> GetFeaturedDealsAsync(int count)
+    {
+        var hotels = await _hotelRepository.GetFeaturedDealsAsync(count);
+
+        if (!hotels.Any())
+        {
+            throw new NotFoundException("No featured deals found");
+        }
+
+        var now = DateTime.Now;
+
+        var featuredDeals = hotels.Select(hotel =>
+            {
+                var validRooms = hotel.Rooms
+                    .Where(r => r.RoomDiscounts.Any(rd => rd.Discount.ValidFrom <= now && rd.Discount.ValidTo >= now));
+
+                var roomWithMaxDiscount = validRooms
+                    .Select(r => new
+                    {
+                        Room = r,
+                        MaxDiscount = r.RoomDiscounts
+                            .Where(rd => rd.Discount.ValidFrom <= now && rd.Discount.ValidTo >= now)
+                            .Max(rd => rd.Discount.DiscountPercentageValue)
+                    })
+                    .OrderByDescending(r => r.MaxDiscount)
+                    .FirstOrDefault();
+
+                if (roomWithMaxDiscount == null)
+                {
+                    return null;
+                }
+
+                var dto = _mapper.Map<FeaturedDealDto>(hotel);
+                dto.OriginalPrice = roomWithMaxDiscount.Room.PricePerNight;
+                dto.DiscountedPrice = roomWithMaxDiscount.Room.PricePerNight * (1 - (decimal)roomWithMaxDiscount.MaxDiscount);
+                return dto;
+            })
+            .Where(dto => dto != null) 
+            .ToList();
+
+        return featuredDeals;
+    }
+
 }
