@@ -23,6 +23,9 @@ public class HomeController : Controller
     [HttpGet("search")]
     public async Task<PaginatedList<HotelSearchResultDto>> SearchHotelsAsync([FromQuery] SearchRequestDto searchRequest, int pageSize, int pageNumber)
     {
+        var validator = new SearchHotelsValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(searchRequest);
+        
         return await _hotelService.SearchHotelsAsync(searchRequest, pageSize, pageNumber);
     }
     
