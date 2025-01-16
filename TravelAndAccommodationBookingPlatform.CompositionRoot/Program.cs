@@ -11,13 +11,12 @@ using PasswordHashing;
 using TokenGenerator;
 using TravelAndAccommodationBookingPlatform.API.Controllers;
 using TravelAndAccommodationBookingPlatform.API.Middlewares;
-using TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
+using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
-using TravelAndAccommodationBookingPlatform.Domain.Profiles;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
@@ -43,7 +42,6 @@ public class Program
                 };
             });
         
-        // Add services to the container.
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnly", policy =>
@@ -112,6 +110,12 @@ public class Program
         builder.Services.AddTransient<ITokenGeneratorService, JwtGeneratorService>();
         builder.Services.AddTransient<IPasswordService, Argon2PasswordService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+        builder.Services.AddScoped<IHotelService, HotelService>();
+        
+        builder.Services.AddScoped<IPaginationService, PaginationService>();
+        
+        
         
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
