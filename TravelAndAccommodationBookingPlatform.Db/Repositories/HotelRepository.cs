@@ -89,4 +89,37 @@ public class HotelRepository : IHotelRepository
 
         return (paginatedHotels, totalCount);
     }
+    
+    public async Task<List<Hotel>> GetFeaturedDealsAsync(int count)
+    {
+        return await _context.Hotels
+            .Include(h => h.City)
+            .Include(h => h.Rooms)
+            .ThenInclude(r => r.RoomDiscounts)
+            .ThenInclude(rd => rd.Discount)
+            .Where(h => h.Rooms.Any(r => 
+                r.RoomDiscounts.Any(rd => 
+                    rd.Discount.ValidFrom <= DateTime.Now && 
+                    rd.Discount.ValidTo >= DateTime.Now) &&
+                r.Availability == true))
+            .OrderBy(h => Guid.NewGuid())
+            .Take(count)
+            .Select(h => new Hotel
+            {
+                HotelId = h.HotelId,
+                HotelName = h.HotelName,
+                StarRating = h.StarRating,
+                ThumbnailUrl = h.ThumbnailUrl,
+                Address = h.Address,
+                City = h.City,
+                Rooms = h.Rooms
+                    .Where(r => 
+                        r.RoomDiscounts.Any(rd => 
+                            rd.Discount.ValidFrom <= DateTime.Now && 
+                            rd.Discount.ValidTo >= DateTime.Now) &&
+                        r.Availability == true) 
+                    .ToList()
+            })
+            .ToListAsync();
+    }
 }
