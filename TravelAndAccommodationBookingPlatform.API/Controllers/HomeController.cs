@@ -23,6 +23,12 @@ public class HomeController : Controller
     [HttpGet("search")]
     public async Task<PaginatedList<HotelSearchResultDto>> SearchHotelsAsync([FromQuery] SearchRequestDto searchRequest, int pageSize, int pageNumber)
     {
-       return await _hotelService.SearchHotelsAsync(searchRequest, pageSize, pageNumber);
+        return await _hotelService.SearchHotelsAsync(searchRequest, pageSize, pageNumber);
+    }
+    
+    [HttpGet("featured-deals")]
+    public async Task<List<FeaturedDealDto>> GetFeaturedDeals()
+    {
+        return await _hotelService.GetFeaturedDealsAsync(5);
     }
 }
