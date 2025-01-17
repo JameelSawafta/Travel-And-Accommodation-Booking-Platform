@@ -23,5 +23,10 @@ public class HotelProfile : Profile
             .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.Rooms.FirstOrDefault().RoomId))
             .ForMember(dest => dest.OriginalPrice, opt => opt.Ignore()) 
             .ForMember(dest => dest.DiscountedPrice, opt => opt.Ignore()); 
+        
+        CreateMap<Hotel, RecentlyVisitedHotelDto>()
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.CityName))
+            .ForMember(dest => dest.PricePerNight, opt => opt.MapFrom(src => src.Rooms.Min(r => r.PricePerNight)))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.CityName));
     }
 }
