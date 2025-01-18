@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using TravelAndAccommodationBookingPlatform.API.Validators.HomeValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
+using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.Common;
 using TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
@@ -15,12 +16,13 @@ public class HomeController : Controller
 {
     private readonly IHotelService _hotelService;
     private readonly IBookingService _bookingService;
-
-
-    public HomeController(IHotelService hotelService, IBookingService bookingService)
+    private readonly ICityService _cityService;
+    
+    public HomeController(IHotelService hotelService, IBookingService bookingService, ICityService cityService)
     {
         _hotelService = hotelService;
         _bookingService = bookingService;
+        _cityService = cityService;
     }
 
     [HttpGet("search")]
@@ -43,5 +45,11 @@ public class HomeController : Controller
     public async Task<List<RecentlyVisitedHotelDto>> GetRecentlyVisitedHotels(Guid userId)
     {
         return await _bookingService.GetRecentlyVisitedHotelsAsync(userId, 5);
+    }
+
+    [HttpGet("trending-destinations")]
+    public async Task<List<TrendingDestinationDto>> GetTrendingDestinations()
+    {
+        return await _cityService.GetTrendingDestinationsAsync(5);
     }
 }
