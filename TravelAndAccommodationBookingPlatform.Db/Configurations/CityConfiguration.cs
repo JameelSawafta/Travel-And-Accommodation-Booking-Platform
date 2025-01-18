@@ -12,6 +12,7 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
         builder.Property(c => c.CityName).IsRequired().HasMaxLength(100);
         builder.Property(c => c.Country).IsRequired().HasMaxLength(100);
         builder.Property(c => c.PostCode).HasMaxLength(20);
+        builder.Property(c => c.ThumbnailUrl).HasMaxLength(200);
         
         builder.HasIndex(c => c.CityName).IsUnique();
     }
