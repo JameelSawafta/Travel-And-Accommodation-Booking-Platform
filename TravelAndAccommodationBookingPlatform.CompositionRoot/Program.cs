@@ -114,6 +114,8 @@ public class Program
         builder.Services.AddScoped<IHotelService, HotelService>();
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
         builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<ICityRepository, CityRepository>();
+        builder.Services.AddScoped<ICityService, CityService>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         
