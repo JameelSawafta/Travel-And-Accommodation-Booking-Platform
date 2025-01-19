@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAndAccommodationBookingPlatform.API.Validators.HomeValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -41,6 +42,7 @@ public class HomeController : Controller
         return await _hotelService.GetFeaturedDealsAsync(5);
     }
 
+    [Authorize(Policy = "UserOrAdmin")]
     [HttpGet("{userId}/recently-visited-hotels")]
     public async Task<List<RecentlyVisitedHotelDto>> GetRecentlyVisitedHotels(Guid userId)
     {
