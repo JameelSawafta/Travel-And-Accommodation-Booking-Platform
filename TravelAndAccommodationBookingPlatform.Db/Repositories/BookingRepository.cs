@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 
@@ -20,7 +21,7 @@ public class BookingRepository : IBookingRepository
     public async Task<List<Hotel>> GetRecentlyVisitedHotelsAsync(Guid userId, int count)
     {
         var hotelIds = await _context.Bookings
-            .Where(b => b.UserId == userId)
+            .Where(b => b.UserId == userId && b.CheckOutDate <= DateTime.Now && b.Status == BookingStatus.Confirmed)
             .OrderByDescending(b => b.CheckOutDate) 
             .Select(b => b.Room.HotelId) 
             .Distinct() 
