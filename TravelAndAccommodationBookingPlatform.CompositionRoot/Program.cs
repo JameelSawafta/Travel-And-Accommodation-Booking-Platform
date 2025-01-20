@@ -17,6 +17,7 @@ using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
+using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
@@ -60,9 +61,15 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var xmlFile = $"{assembly.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
+            }
             
             options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {

@@ -9,7 +9,7 @@
 
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <DocumentationFile>..\TravelAndAccommodationBookingPlatform.CompositionRoot\bin\Debug\net8.0\TravelAndAccommodationBookingPlatform.CompositionRoot.xml</DocumentationFile>
+        <DocumentationFile>..\TravelAndAccommodationBookingPlatform.CompositionRoot\bin\Debug\net8.0\TravelAndAccommodationBookingPlatform.API.xml</DocumentationFile>
     </PropertyGroup>
 
 
