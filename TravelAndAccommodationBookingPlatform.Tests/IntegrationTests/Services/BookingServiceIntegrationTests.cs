@@ -4,6 +4,7 @@ using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
@@ -67,7 +68,8 @@ public class BookingServiceIntegrationTests : IDisposable
                         new Booking
                         {
                             UserId = userId,
-                            CheckOutDate = DateTime.Now.AddDays(-1)
+                            CheckOutDate = DateTime.Now.AddDays(-1),
+                            Status = BookingStatus.Confirmed
                         }
                     }
                 }
