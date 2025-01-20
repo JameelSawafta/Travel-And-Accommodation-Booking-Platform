@@ -10,9 +10,14 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
     public DbSet<Hotel> Hotels { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Booking> Bookings { get; set; }
-    public DbSet<BookingDetail> BookingDetails { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Discount> Discounts { get; set; }
+    public DbSet<RoomDiscount> RoomDiscounts { get; set; }
+    public DbSet<Amenity> Amenities { get; set; }
+    public DbSet<RoomAmenity> RoomAmenities { get; set; }
+    public DbSet<Review> Reviews { get; set; }
+    public DbSet<Owner> Owners { get; set; }
+    public DbSet<Image> Images { get; set; }
     
     public TravelAndAccommodationBookingPlatformDbContext(DbContextOptions<TravelAndAccommodationBookingPlatformDbContext> options) : base(options)
     {
@@ -21,13 +26,7 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
-        
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TravelAndAccommodationBookingPlatformDbContext).Assembly);
         
         base.OnModelCreating(modelBuilder);
     }

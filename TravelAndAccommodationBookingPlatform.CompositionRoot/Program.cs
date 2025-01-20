@@ -11,13 +11,13 @@ using PasswordHashing;
 using TokenGenerator;
 using TravelAndAccommodationBookingPlatform.API.Controllers;
 using TravelAndAccommodationBookingPlatform.API.Middlewares;
-using TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
+using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
-using TravelAndAccommodationBookingPlatform.Domain.Profiles;
+using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
@@ -43,7 +43,6 @@ public class Program
                 };
             });
         
-        // Add services to the container.
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnly", policy =>
@@ -62,9 +61,15 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            options.IncludeXmlComments(xmlPath);
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var xmlFile = $"{assembly.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
+            }
             
             options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
@@ -112,6 +117,16 @@ public class Program
         builder.Services.AddTransient<ITokenGeneratorService, JwtGeneratorService>();
         builder.Services.AddTransient<IPasswordService, Argon2PasswordService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+        builder.Services.AddScoped<IHotelService, HotelService>();
+        builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+        builder.Services.AddScoped<IBookingService, BookingService>();
+        builder.Services.AddScoped<ICityRepository, CityRepository>();
+        builder.Services.AddScoped<ICityService, CityService>();
+        
+        builder.Services.AddScoped<IPaginationService, PaginationService>();
+        
+        
         
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         

@@ -22,6 +22,26 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Amenity", b =>
+                {
+                    b.Property<Guid>("AmenityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AmenityName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("AmenityId");
+
+                    b.ToTable("Amenities");
+                });
+
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Booking", b =>
                 {
                     b.Property<Guid>("BookingId")
@@ -34,7 +54,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("timestamp");
 
-                    b.Property<Guid>("DiscountId")
+                    b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
@@ -42,47 +62,22 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("BookingId");
 
-                    b.HasIndex("DiscountId");
+                    b.HasIndex("CheckInDate");
+
+                    b.HasIndex("CheckOutDate");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.BookingDetail", b =>
-                {
-                    b.Property<Guid>("BookingDetailsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BookingId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("DiscountId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("RoomId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("BookingDetailsId");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("DiscountId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("BookingDetails");
                 });
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.City", b =>
@@ -91,12 +86,12 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Country")
+                    b.Property<string>("CityName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -105,12 +100,14 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("PostOfficeCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("CityId");
+
+                    b.HasIndex("CityName")
+                        .IsUnique();
 
                     b.ToTable("Cities");
                 });
@@ -121,23 +118,12 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int>("DiscountType")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("DiscountValue")
-                        .HasColumnType("double precision");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                    b.Property<double>("DiscountPercentageValue")
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<DateTime>("ValidFrom")
                         .HasColumnType("timestamp");
@@ -165,18 +151,22 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("HotelName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Owner")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -185,11 +175,68 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                     b.Property<int>("StarRating")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.HasKey("HotelId");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("HotelName");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("CityId", "HotelName");
 
                     b.ToTable("Hotels");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Image", b =>
+                {
+                    b.Property<Guid>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Owner", b =>
+                {
+                    b.Property<Guid>("OwnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("OwnerId");
+
+                    b.ToTable("Owners");
                 });
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Payment", b =>
@@ -199,7 +246,7 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<Guid>("BookingId")
                         .HasColumnType("uuid");
@@ -211,13 +258,45 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TransactionID")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("PaymentId");
 
                     b.HasIndex("BookingId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Review", b =>
+                {
+                    b.Property<Guid>("ReviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("HotelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ReviewId");
+
+                    b.HasIndex("HotelId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", b =>
@@ -243,8 +322,8 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                     b.Property<Guid>("HotelId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("PricePerNight")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("RoomNumber")
                         .IsRequired()
@@ -256,9 +335,54 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
                     b.HasKey("RoomId");
 
-                    b.HasIndex("HotelId");
+                    b.HasIndex("RoomNumber");
+
+                    b.HasIndex("HotelId", "RoomNumber")
+                        .IsUnique();
 
                     b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.RoomAmenity", b =>
+                {
+                    b.Property<Guid>("RoomAmenityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AmenityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RoomAmenityId");
+
+                    b.HasIndex("AmenityId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomAmenities");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.RoomDiscount", b =>
+                {
+                    b.Property<Guid>("RoomDiscountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DiscountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RoomDiscountId");
+
+                    b.HasIndex("DiscountId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomDiscounts");
                 });
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.User", b =>
@@ -286,7 +410,8 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
@@ -313,81 +438,180 @@ namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Booking", b =>
                 {
-                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Discount", "Discount")
-                        .WithMany()
-                        .HasForeignKey("DiscountId")
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", "Room")
+                        .WithMany("Bookings")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Discount");
+                    b.Navigation("Room");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.BookingDetail", b =>
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", b =>
+                {
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.City", "City")
+                        .WithMany("Hotels")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Owner", "Owner")
+                        .WithMany("Hotels")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Image", b =>
+                {
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", "Room")
+                        .WithMany("Images")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Booking", "Booking")
-                        .WithMany()
+                        .WithMany("Payments")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Booking");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Review", b =>
+                {
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Reviews")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", b =>
+                {
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", "Hotel")
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.RoomAmenity", b =>
+                {
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Amenity", "Amenity")
+                        .WithMany("RoomAmenities")
+                        .HasForeignKey("AmenityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", "Room")
+                        .WithMany("RoomAmenities")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Amenity");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.RoomDiscount", b =>
+                {
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Discount", "Discount")
-                        .WithMany()
+                        .WithMany("RoomDiscounts")
                         .HasForeignKey("DiscountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", "Room")
-                        .WithMany()
+                        .WithMany("RoomDiscounts")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("Discount");
 
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", b =>
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Amenity", b =>
                 {
-                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
+                    b.Navigation("RoomAmenities");
                 });
 
-            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Payment", b =>
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Booking", b =>
                 {
-                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Payments");
+                });
 
-                    b.Navigation("Booking");
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.City", b =>
+                {
+                    b.Navigation("Hotels");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Discount", b =>
+                {
+                    b.Navigation("RoomDiscounts");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", b =>
+                {
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Rooms");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Owner", b =>
+                {
+                    b.Navigation("Hotels");
                 });
 
             modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.Room", b =>
                 {
-                    b.HasOne("TravelAndAccommodationBookingPlatform.Domain.Entities.Hotel", "Hotel")
-                        .WithMany()
-                        .HasForeignKey("HotelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Bookings");
 
-                    b.Navigation("Hotel");
+                    b.Navigation("Images");
+
+                    b.Navigation("RoomAmenities");
+
+                    b.Navigation("RoomDiscounts");
+                });
+
+            modelBuilder.Entity("TravelAndAccommodationBookingPlatform.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }
