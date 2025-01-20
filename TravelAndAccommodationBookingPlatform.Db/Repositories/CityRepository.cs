@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 
 namespace TravelAndAccommodationBookingPlatform.Db.Repositories;
@@ -22,7 +23,7 @@ public class CityRepository : ICityRepository
             .ThenInclude(r => r.Bookings)
             .OrderByDescending(c => c.Hotels
                 .Sum(h => h.Rooms
-                    .Sum(r => r.Bookings.Count)))
+                    .Sum(r => r.Bookings.Count(b => b.Status == BookingStatus.Confirmed))))
             .Take(count)
             .ToListAsync();
     }
