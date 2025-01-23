@@ -5,4 +5,5 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 public interface ICityRepository
 {
     Task<List<City>> GetTrendingDestinationsAsync(int count);
+    Task<(IEnumerable<City> Items, int TotalCount)> GetAllCitiesAsync(int pageNumber, int pageSize);
 }
