@@ -9,5 +9,8 @@ public class CityProfile : Profile
     public CityProfile()
     {
         CreateMap<City, TrendingDestinationDto>();
+        CreateMap<City, CityDto>();
+        CreateMap<CreateCityDto, City>();
+        CreateMap<UpdateCityDto, City>();
     }
 }
