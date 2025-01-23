@@ -3,6 +3,7 @@ using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
+using TravelAndAccommodationBookingPlatform.Domain.Models.Common;
 
 namespace TravelAndAccommodationBookingPlatform.Domain.Services;
 
@@ -28,5 +29,13 @@ public class CityService : ICityService
 
         var trendingDestinations = _mapper.Map<List<TrendingDestinationDto>>(cities);
         return trendingDestinations;
+    }
+
+    public async Task<PaginatedList<CityDto>> GetAllCitiesAsync(int pageNumber, int pageSize)
+    {
+        var (cities, totalCount) = await _cityRepository.GetAllCitiesAsync(pageNumber, pageSize);
+        var pageData = new PageData(totalCount, pageSize, pageNumber);
+        var cityDtos = _mapper.Map<IEnumerable<CityDto>>(cities);
+        return new PaginatedList<CityDto>(cityDtos.ToList(), pageData);
     }
 }
