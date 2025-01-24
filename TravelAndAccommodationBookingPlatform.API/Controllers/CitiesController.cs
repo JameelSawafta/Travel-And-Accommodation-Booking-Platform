@@ -30,4 +30,17 @@ public class CitiesController : Controller
     {
         return await _cityService.GetAllCitiesAsync(pageNumber, pageSize);
     }
+    
+    /// <summary>
+    /// Creates a new city.
+    /// </summary>
+    /// <param name="cityDto"></param>
+    /// <returns> A response with status code 201 (Created).</returns>
+    /// <response code="201">Returns a response with status code 201 (Created).</response>
+    [HttpPost]
+    public async Task<IActionResult> CreateCityAsync(CreateCityDto cityDto)
+    {
+        await _cityService.CreateCityAsync(cityDto);
+        return Created("", null);
+    }
 }
