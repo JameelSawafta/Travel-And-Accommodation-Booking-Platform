@@ -37,4 +37,15 @@ public class CityRepository : ICityRepository
         var (paginatedCities, totalCount) = await _paginationService.PaginateAsync(cities, pageNumber, pageSize);
         return (paginatedCities, totalCount);
     }
+
+    public async Task<City> GetCityByNameAsync(string cityName)
+    {
+        return await _context.Cities.FirstOrDefaultAsync(c => c.CityName == cityName);
+    }
+
+    public async Task CreateCityAsync(City city)
+    {
+        await _context.Cities.AddAsync(city);
+        await _context.SaveChangesAsync();
+    }
 }
