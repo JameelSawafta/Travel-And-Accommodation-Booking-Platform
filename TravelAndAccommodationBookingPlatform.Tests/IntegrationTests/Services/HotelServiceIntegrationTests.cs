@@ -34,6 +34,9 @@ public class HotelServiceIntegrationTests : IDisposable
 
             cfg.CreateMap<Room, RoomDto>();
             cfg.CreateMap<Hotel, FeaturedDealDto>();
+            cfg.CreateMap<Hotel, HotelDto>();
+            cfg.CreateMap<CreateHotelDto, Hotel>();
+            cfg.CreateMap<UpdateHotelDto, Hotel>();
         });
         var mapper = mapperConfig.CreateMapper();
 
@@ -166,5 +169,123 @@ public class HotelServiceIntegrationTests : IDisposable
     {
         
         await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.GetFeaturedDealsAsync(5));
+    }
+    
+    [Fact]
+    public async Task GetAllHotelsAsync_ShouldReturnPaginatedList_WhenHotelsExist()
+    {
+        
+        var hotel1 = new Hotel { HotelId = Guid.NewGuid(), HotelName = "Hotel 1", Address = "123 Test Street", PhoneNumber = "123-456-7890" };
+        var hotel2 = new Hotel { HotelId = Guid.NewGuid(), HotelName = "Hotel 2", Address = "456 Test Street", PhoneNumber = "123-456-7890" };
+        _dbContext.Hotels.AddRange(hotel1, hotel2);
+        await _dbContext.SaveChangesAsync();
+
+        
+        var result = await _hotelService.GetAllHotelsAsync(1, 10);
+
+        
+        Assert.Equal(2, result.Items.Count);
+        Assert.Equal(10, result.PageData.PageSize);
+    }
+
+    [Fact]
+    public async Task GetAllHotelsAsync_ShouldReturnEmptyList_WhenNoHotelsExist()
+    {
+        
+        var result = await _hotelService.GetAllHotelsAsync(1, 10);
+
+        
+        Assert.Empty(result.Items);
+    }
+    
+    [Fact]
+    public async Task GetHotelByIdAsync_ShouldReturnHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel", Address = "123 Test Street", PhoneNumber = "123-456-7890" };
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
+        
+        var result = await _hotelService.GetHotelByIdAsync(hotelId);
+
+        
+        Assert.Equal(hotelId, result.HotelId);
+        Assert.Equal("Test Hotel", result.HotelName);
+    }
+
+    [Fact]
+    public async Task GetHotelByIdAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.GetHotelByIdAsync(Guid.NewGuid()));
+    }
+    
+    [Fact]
+    public async Task CreateHotelAsync_ShouldCreateHotel_WhenValidInput()
+    {
+        
+        var dto = new CreateHotelDto { HotelName = "Test Hotel", CityId = Guid.NewGuid(), OwnerId = Guid.NewGuid(), PhoneNumber = "123-456-7890", Address = "123 Test Street", Latitude = 0, Longitude = 0 };
+
+        
+        await _hotelService.CreateHotelAsync(dto);
+
+        
+        var createdHotel = await _dbContext.Hotels.FirstOrDefaultAsync(h => h.HotelName == "Test Hotel");
+        Assert.NotNull(createdHotel);
+    }
+    
+    [Fact]
+    public async Task UpdateHotelAsync_ShouldUpdateHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Old Name", Address = "123 Test Street", PhoneNumber = "123-456-7890" };
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
+        var dto = new UpdateHotelDto { HotelName = "New Name" };
+
+        
+        await _hotelService.UpdateHotelAsync(hotelId, dto);
+
+        
+        var updatedHotel = await _dbContext.Hotels.FindAsync(hotelId);
+        Assert.Equal("New Name", updatedHotel.HotelName);
+    }
+
+    [Fact]
+    public async Task UpdateHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.UpdateHotelAsync(Guid.NewGuid(), new UpdateHotelDto()));
+    }
+    
+    [Fact]
+    public async Task DeleteHotelAsync_ShouldDeleteHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel", Address = "123 Test Street", PhoneNumber = "123-456-7890" };
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
+        
+        await _hotelService.DeleteHotelAsync(hotelId);
+
+        
+        var deletedHotel = await _dbContext.Hotels.FindAsync(hotelId);
+        Assert.Null(deletedHotel);
+    }
+
+    [Fact]
+    public async Task DeleteHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.DeleteHotelAsync(Guid.NewGuid()));
     }
 }
