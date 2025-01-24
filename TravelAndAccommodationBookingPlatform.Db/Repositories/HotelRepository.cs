@@ -125,4 +125,35 @@ public class HotelRepository : IHotelRepository
             })
             .ToListAsync();
     }
+
+    public async Task<(IEnumerable<Hotel> Items, int TotalCount)> GetAllHotelsAsync(int pageNumber, int pageSize)
+    {
+        var hotels = _context.Hotels.AsQueryable();
+        var (paginatedHotels, totalCount) = await _paginationService.PaginateAsync(hotels, pageSize, pageNumber);
+        return (paginatedHotels, totalCount);
+    }
+
+    public async Task<Hotel> GetHotelByIdAsync(Guid hotelId)
+    {
+        return await _context.Hotels.FirstOrDefaultAsync(c => c.HotelId == hotelId);
+    }
+
+    public async Task CreateHotelAsync(Hotel hotel)
+    {
+        await _context.Hotels.AddAsync(hotel);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateHotelAsync(Hotel hotel)
+    {
+        _context.Hotels.Update(hotel);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteHotelAsync(Guid hotelId)
+    {
+        var hotel = await GetHotelByIdAsync(hotelId);
+        _context.Hotels.Remove(hotel);
+        await _context.SaveChangesAsync();
+    }
 }

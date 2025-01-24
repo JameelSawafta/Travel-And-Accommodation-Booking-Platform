@@ -1,4 +1,5 @@
 using AutoMapper;
+using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -84,5 +85,49 @@ public class HotelService : IHotelService
 
         return featuredDeals;
     }
+    
+    public async Task<PaginatedList<HotelDto>> GetAllHotelsAsync(int pageNumber, int pageSize)
+    {
+        var (hotels, totalCount) = await _hotelRepository.GetAllHotelsAsync(pageNumber, pageSize);
+        var pageData = new PageData(totalCount, pageSize, pageNumber);
+        var hotelDtos = _mapper.Map<IEnumerable<HotelDto>>(hotels);
+        return new PaginatedList<HotelDto>(hotelDtos.ToList(), pageData);
+    }
 
+    public async Task<HotelDto> GetHotelByIdAsync(Guid hotelId)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        return _mapper.Map<HotelDto>(hotel);
+    }
+
+    public async Task CreateHotelAsync(CreateHotelDto hotelDto)
+    {
+        var hotel = _mapper.Map<Hotel>(hotelDto);
+        await _hotelRepository.CreateHotelAsync(hotel);
+    }
+
+    public async Task UpdateHotelAsync(Guid hotelId, UpdateHotelDto hotelDto)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        _mapper.Map(hotelDto, hotel);
+        await _hotelRepository.UpdateHotelAsync(hotel);
+    }
+
+    public async Task DeleteHotelAsync(Guid hotelId)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        await _hotelRepository.DeleteHotelAsync(hotelId);
+    }
 }

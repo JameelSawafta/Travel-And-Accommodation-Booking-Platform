@@ -109,4 +109,153 @@ public class HotelServiceTests
         Assert.Equal("Test Hotel", result.First().HotelName);
         Assert.Equal(90, result.First().DiscountedPrice);
     }
+    
+    [Fact]
+    public async Task GetAllHotelsAsync_ShouldReturnPaginatedList_WhenHotelsExist()
+    {
+        var hotels = new List<Hotel>
+        {
+            new Hotel { HotelId = Guid.NewGuid(), HotelName = "Hotel 1" },
+            new Hotel { HotelId = Guid.NewGuid(), HotelName = "Hotel 2" }
+        };
+        var paginatedHotels = (hotels.AsEnumerable(), 2);
+        var hotelDtos = hotels.Select(h => new HotelDto { HotelId = h.HotelId, HotelName = h.HotelName }).ToList();
+
+        _mockHotelRepository.Setup(repo => repo.GetAllHotelsAsync(1, 10))
+            .ReturnsAsync(paginatedHotels);
+        _mockMapper.Setup(mapper => mapper.Map<IEnumerable<HotelDto>>(It.IsAny<IEnumerable<Hotel>>()))
+            .Returns(hotelDtos);
+
+        var result = await _hotelService.GetAllHotelsAsync(1, 10);
+
+        Assert.Equal(2, result.Items.Count);
+        Assert.Equal(10, result.PageData.PageSize);
+    }
+
+    [Fact]
+    public async Task GetAllHotelsAsync_ShouldReturnEmptyList_WhenNoHotelsExist()
+    {
+        var emptyResult = (Enumerable.Empty<Hotel>(), 0);
+        _mockHotelRepository.Setup(repo => repo.GetAllHotelsAsync(1, 10))
+            .ReturnsAsync(emptyResult);
+
+        var result = await _hotelService.GetAllHotelsAsync(1, 10);
+
+        Assert.Empty(result.Items);
+    }
+    
+    [Fact]
+    public async Task GetHotelByIdAsync_ShouldReturnHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel" };
+        var hotelDto = new HotelDto { HotelId = hotelId, HotelName = "Test Hotel" };
+
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync(hotel);
+        _mockMapper.Setup(mapper => mapper.Map<HotelDto>(hotel))
+            .Returns(hotelDto);
+
+        
+        var result = await _hotelService.GetHotelByIdAsync(hotelId);
+
+        
+        Assert.Equal(hotelId, result.HotelId);
+        Assert.Equal("Test Hotel", result.HotelName);
+    }
+
+    [Fact]
+    public async Task GetHotelByIdAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.GetHotelByIdAsync(hotelId));
+    }
+    
+    [Fact]
+    public async Task CreateHotelAsync_ShouldCreateHotel_WhenValidInput()
+    {
+        
+        var dto = new CreateHotelDto { HotelName = "Test Hotel" };
+        var hotel = new Hotel { HotelId = Guid.NewGuid(), HotelName = "Test Hotel" };
+
+        _mockMapper.Setup(mapper => mapper.Map<Hotel>(dto))
+            .Returns(hotel);
+
+        
+        await _hotelService.CreateHotelAsync(dto);
+
+        
+        _mockHotelRepository.Verify(repo => repo.CreateHotelAsync(hotel), Times.Once);
+    }
+    
+    [Fact]
+    public async Task UpdateHotelAsync_ShouldUpdateHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var existingHotel = new Hotel { HotelId = hotelId, HotelName = "Old Name" };
+        var dto = new UpdateHotelDto { HotelName = "New Name" };
+
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync(existingHotel);
+        _mockMapper.Setup(mapper => mapper.Map(dto, existingHotel))
+            .Callback<UpdateHotelDto, Hotel>((src, dest) => dest.HotelName = src.HotelName);
+
+        
+        await _hotelService.UpdateHotelAsync(hotelId, dto);
+
+        
+        _mockHotelRepository.Verify(repo => repo.UpdateHotelAsync(existingHotel), Times.Once);
+        Assert.Equal("New Name", existingHotel.HotelName);
+    }
+
+    [Fact]
+    public async Task UpdateHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.UpdateHotelAsync(hotelId, new UpdateHotelDto()));
+    }
+    
+    [Fact]
+    public async Task DeleteHotelAsync_ShouldDeleteHotel_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel" };
+
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync(hotel);
+
+        
+        await _hotelService.DeleteHotelAsync(hotelId);
+
+        
+        _mockHotelRepository.Verify(repo => repo.DeleteHotelAsync(hotelId), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _hotelService.DeleteHotelAsync(hotelId));
+    }
 }
