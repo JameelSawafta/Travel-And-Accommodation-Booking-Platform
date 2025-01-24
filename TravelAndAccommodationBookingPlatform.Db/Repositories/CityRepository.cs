@@ -34,7 +34,7 @@ public class CityRepository : ICityRepository
     public async Task<(IEnumerable<City> Items, int TotalCount)> GetAllCitiesAsync(int pageNumber, int pageSize)
     {
         var cities = _context.Cities.AsQueryable();
-        var (paginatedCities, totalCount) = await _paginationService.PaginateAsync(cities, pageNumber, pageSize);
+        var (paginatedCities, totalCount) = await _paginationService.PaginateAsync(cities, pageSize, pageNumber);
         return (paginatedCities, totalCount);
     }
 
