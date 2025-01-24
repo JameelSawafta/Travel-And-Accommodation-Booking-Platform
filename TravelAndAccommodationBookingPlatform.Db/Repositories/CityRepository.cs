@@ -40,7 +40,7 @@ public class CityRepository : ICityRepository
 
     public async Task<City> GetCityByNameAsync(string cityName)
     {
-        return await _context.Cities.FirstOrDefaultAsync(c => c.CityName == cityName);
+        return await _context.Cities.FirstOrDefaultAsync(c => c.CityName.ToLower() == cityName.ToLower());
     }
 
     public async Task CreateCityAsync(City city)

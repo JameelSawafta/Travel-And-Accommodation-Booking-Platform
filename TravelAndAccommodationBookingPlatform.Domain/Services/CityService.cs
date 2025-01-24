@@ -40,6 +40,16 @@ public class CityService : ICityService
         return new PaginatedList<CityDto>(cityDtos.ToList(), pageData);
     }
     
+    public async Task<CityDto> GetCityByNameAsync(string cityName)
+    {
+        var city = await _cityRepository.GetCityByNameAsync(cityName);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+        return _mapper.Map<CityDto>(city);
+    }
+    
     public async Task CreateCityAsync(CreateCityDto cityDto)
     {
         var existingCity = await _cityRepository.GetCityByNameAsync(cityDto.CityName);

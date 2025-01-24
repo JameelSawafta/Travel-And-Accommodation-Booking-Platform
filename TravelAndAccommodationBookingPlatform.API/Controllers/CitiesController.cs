@@ -33,6 +33,19 @@ public class CitiesController : Controller
     }
     
     /// <summary>
+    /// Retrieves a city by name.
+    /// </summary>
+    /// <param name="cityName">The name of the city.</param>
+    /// <returns>A city.</returns>
+    /// <response code="200">Returns the city.</response>
+    /// <response code="404">If the city is not found.</response>
+    [HttpGet("{cityName}")]
+    public async Task<CityDto> GetCityByNameAsync(string cityName)
+    {
+        return await _cityService.GetCityByNameAsync(cityName);
+    }
+    
+    /// <summary>
     /// Creates a new city.
     /// </summary>
     /// <param name="cityDto"></param>
