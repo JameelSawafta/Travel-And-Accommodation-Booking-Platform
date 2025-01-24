@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.CityValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.Common;
@@ -37,10 +38,14 @@ public class CitiesController : Controller
     /// <param name="cityDto"></param>
     /// <returns> A response with status code 201 (Created).</returns>
     /// <response code="201">Returns a response with status code 201 (Created).</response>
+    /// <response code="400">If the city creation request is invalid.</response>
+    /// <response code="409">If the city already exists.</response>
     [HttpPost]
     public async Task<IActionResult> CreateCityAsync(CreateCityDto cityDto)
     {
+        var validator = new CreateCityValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(cityDto);
         await _cityService.CreateCityAsync(cityDto);
-        return Created("", null);
+        return Created();
     }
 }
