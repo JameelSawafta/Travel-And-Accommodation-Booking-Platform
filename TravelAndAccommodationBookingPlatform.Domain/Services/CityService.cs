@@ -90,4 +90,14 @@ public class CityService : ICityService
         _mapper.Map(cityDto, city);
         await _cityRepository.UpdateCityAsync(city);
     }
+    
+    public async Task DeleteCityAsync(Guid cityId)
+    {
+        var city = await _cityRepository.GetCityByIdAsync(cityId);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+        await _cityRepository.DeleteCityAsync(cityId);
+    }
 }

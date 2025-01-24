@@ -93,4 +93,18 @@ public class CitiesController : Controller
         await _cityService.UpdateCityAsync(cityId, cityDto);
         return NoContent();
     }
+    
+    /// <summary>
+    /// Deletes a city.
+    /// </summary>
+    /// <param name="cityId">The ID of the city.</param>
+    /// <returns> A response with status code 204 (No Content).</returns>
+    /// <response code="204">Returns a response with status code 204 (No Content).</response>
+    /// <response code="404">If the city is not found.</response>
+    [HttpDelete("{cityId:guid}")]
+    public async Task<IActionResult> DeleteCityAsync(Guid cityId)
+    {
+        await _cityService.DeleteCityAsync(cityId);
+        return NoContent();
+    }
 }

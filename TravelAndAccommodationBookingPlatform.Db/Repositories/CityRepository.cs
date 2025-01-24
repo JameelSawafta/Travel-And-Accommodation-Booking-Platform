@@ -59,4 +59,11 @@ public class CityRepository : ICityRepository
         _context.Cities.Update(city);
         await _context.SaveChangesAsync();
     }
+
+    public async Task DeleteCityAsync(Guid cityId)
+    {
+        var city = await GetCityByIdAsync(cityId);
+        _context.Cities.Remove(city);
+        await _context.SaveChangesAsync();
+    }
 }

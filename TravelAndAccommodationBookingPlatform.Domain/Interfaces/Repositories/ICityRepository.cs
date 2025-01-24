@@ -10,4 +10,5 @@ public interface ICityRepository
     Task<City> GetCityByIdAsync(Guid cityId);
     Task CreateCityAsync(City city);
     Task UpdateCityAsync(City city);
+    Task DeleteCityAsync(Guid cityId);
 }
