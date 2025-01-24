@@ -7,4 +7,5 @@ public interface ICityService
 {
     Task<List<TrendingDestinationDto>> GetTrendingDestinationsAsync(int count);
     Task<PaginatedList<CityDto>> GetAllCitiesAsync(int pageNumber, int pageSize);
+    Task CreateCityAsync(CreateCityDto cityDto);
 }

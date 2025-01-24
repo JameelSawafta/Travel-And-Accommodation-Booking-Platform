@@ -1,4 +1,5 @@
 using AutoMapper;
+using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -37,5 +38,16 @@ public class CityService : ICityService
         var pageData = new PageData(totalCount, pageSize, pageNumber);
         var cityDtos = _mapper.Map<IEnumerable<CityDto>>(cities);
         return new PaginatedList<CityDto>(cityDtos.ToList(), pageData);
+    }
+    
+    public async Task CreateCityAsync(CreateCityDto cityDto)
+    {
+        var existingCity = await _cityRepository.GetCityByNameAsync(cityDto.CityName);
+        if (existingCity != null)
+        {
+            throw new ConflictException("City already exists.");
+        }
+        var city = _mapper.Map<City>(cityDto);
+        await _cityRepository.CreateCityAsync(city);
     }
 }
