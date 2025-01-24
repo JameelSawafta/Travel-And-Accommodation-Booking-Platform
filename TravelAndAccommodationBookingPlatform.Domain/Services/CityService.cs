@@ -50,6 +50,16 @@ public class CityService : ICityService
         return _mapper.Map<CityDto>(city);
     }
     
+    public async Task<CityDto> GetCityByIdAsync(Guid cityId)
+    {
+        var city = await _cityRepository.GetCityByIdAsync(cityId);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+        return _mapper.Map<CityDto>(city);
+    }
+    
     public async Task CreateCityAsync(CreateCityDto cityDto)
     {
         var existingCity = await _cityRepository.GetCityByNameAsync(cityDto.CityName);

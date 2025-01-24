@@ -43,6 +43,11 @@ public class CityRepository : ICityRepository
         return await _context.Cities.FirstOrDefaultAsync(c => c.CityName.ToLower() == cityName.ToLower());
     }
 
+    public async Task<City> GetCityByIdAsync(Guid cityId)
+    {
+        return await _context.Cities.FirstOrDefaultAsync(c => c.CityId == cityId);
+    }
+
     public async Task CreateCityAsync(City city)
     {
         await _context.Cities.AddAsync(city);

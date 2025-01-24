@@ -46,6 +46,19 @@ public class CitiesController : Controller
     }
     
     /// <summary>
+    /// Retrieves a city by ID.
+    /// </summary>
+    /// <param name="cityId">The ID of the city.</param>
+    /// <returns>A city.</returns>
+    /// <response code="200">Returns the city.</response>
+    /// <response code="404">If the city is not found.</response>
+    [HttpGet("{cityId:guid}")]
+    public async Task<CityDto> GetCityByIdAsync(Guid cityId)
+    {
+        return await _cityService.GetCityByIdAsync(cityId);
+    }
+    
+    /// <summary>
     /// Creates a new city.
     /// </summary>
     /// <param name="cityDto"></param>
