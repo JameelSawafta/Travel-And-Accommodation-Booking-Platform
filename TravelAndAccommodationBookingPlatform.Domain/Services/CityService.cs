@@ -70,4 +70,24 @@ public class CityService : ICityService
         var city = _mapper.Map<City>(cityDto);
         await _cityRepository.CreateCityAsync(city);
     }
+
+    public async Task UpdateCityAsync(Guid cityId,UpdateCityDto cityDto)
+    {
+        var city = await _cityRepository.GetCityByIdAsync(cityId);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+
+        if (cityDto.CityName.ToLower() != city.CityName.ToLower())
+        {
+            var existingCity = await _cityRepository.GetCityByNameAsync(cityDto.CityName);
+            if (existingCity != null)
+            {
+                throw new ConflictException("City already exists.");
+            }
+        }
+        _mapper.Map(cityDto, city);
+        await _cityRepository.UpdateCityAsync(city);
+    }
 }

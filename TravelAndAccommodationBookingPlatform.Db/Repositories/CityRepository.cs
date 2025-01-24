@@ -53,4 +53,10 @@ public class CityRepository : ICityRepository
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateCityAsync(City city)
+    {
+        _context.Cities.Update(city);
+        await _context.SaveChangesAsync();
+    }
 }

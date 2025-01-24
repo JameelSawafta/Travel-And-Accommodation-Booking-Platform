@@ -74,4 +74,23 @@ public class CitiesController : Controller
         await _cityService.CreateCityAsync(cityDto);
         return Created();
     }
+    
+    /// <summary>
+    /// Updates a city.
+    /// </summary>
+    /// <param name="cityId">The ID of the city.</param>
+    /// <param name="cityDto">The updated city details.</param>
+    /// <returns> A response with status code 204 (No Content).</returns>
+    /// <response code="204">Returns a response with status code 204 (No Content).</response>
+    /// <response code="400">If the city update request is invalid.</response>
+    /// <response code="404">If the city is not found.</response>
+    /// <response code="409">If the city already exists.</response>
+    [HttpPut("{cityId:guid}")]
+    public async Task<IActionResult> UpdateCityAsync(Guid cityId, UpdateCityDto cityDto)
+    {
+        var validator = new UpdateCityValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(cityDto);
+        await _cityService.UpdateCityAsync(cityId, cityDto);
+        return NoContent();
+    }
 }

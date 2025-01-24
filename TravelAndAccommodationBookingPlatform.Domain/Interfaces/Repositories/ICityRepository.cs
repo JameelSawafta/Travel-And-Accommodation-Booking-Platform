@@ -9,4 +9,5 @@ public interface ICityRepository
     Task<City> GetCityByNameAsync(string cityName);
     Task<City> GetCityByIdAsync(Guid cityId);
     Task CreateCityAsync(City city);
+    Task UpdateCityAsync(City city);
 }

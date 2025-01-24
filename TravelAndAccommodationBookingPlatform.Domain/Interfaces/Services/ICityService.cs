@@ -10,4 +10,5 @@ public interface ICityService
     Task<CityDto> GetCityByNameAsync(string cityName);
     Task<CityDto> GetCityByIdAsync(Guid cityId);
     Task CreateCityAsync(CreateCityDto cityDto);
+    Task UpdateCityAsync(Guid cityId,UpdateCityDto cityDto);
 }
