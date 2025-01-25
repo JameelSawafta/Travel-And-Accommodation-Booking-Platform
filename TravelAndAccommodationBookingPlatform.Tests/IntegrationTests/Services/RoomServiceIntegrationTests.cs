@@ -25,6 +25,7 @@ public class RoomServiceIntegrationTests : IDisposable
         _dbContext = new TravelAndAccommodationBookingPlatformDbContext(_dbOptions);
 
         var roomRepository = new RoomRepository(_dbContext, new PaginationService());
+        var hotelRepository = new HotelRepository(_dbContext , new PaginationService());
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
@@ -34,7 +35,7 @@ public class RoomServiceIntegrationTests : IDisposable
         });
         var mapper = mapperConfig.CreateMapper();
 
-        _roomService = new RoomService(roomRepository, mapper);
+        _roomService = new RoomService(roomRepository, hotelRepository, mapper);
     }
 
     public void Dispose()
@@ -46,7 +47,7 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task GetAllRoomsAsync_ShouldReturnPaginatedList_WhenRoomsExist()
     {
-        // Arrange
+        
         var room1 = new Room 
         { 
             RoomId = Guid.NewGuid(), 
@@ -72,10 +73,10 @@ public class RoomServiceIntegrationTests : IDisposable
         _dbContext.Rooms.AddRange(room1, room2);
         await _dbContext.SaveChangesAsync();
 
-        // Act
+        
         var result = await _roomService.GetAllRoomsAsync(1, 10);
 
-        // Assert
+        
         Assert.Equal(2, result.Items.Count);
         Assert.Equal(10, result.PageData.PageSize);
     }
@@ -83,17 +84,17 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task GetAllRoomsAsync_ShouldReturnEmptyList_WhenNoRoomsExist()
     {
-        // Act
+        
         var result = await _roomService.GetAllRoomsAsync(1, 10);
 
-        // Assert
+        
         Assert.Empty(result.Items);
     }
 
     [Fact]
     public async Task GetRoomByIdAsync_ShouldReturnRoom_WhenRoomExists()
     {
-        // Arrange
+        
         var roomId = Guid.NewGuid();
         var room = new Room 
         { 
@@ -109,7 +110,7 @@ public class RoomServiceIntegrationTests : IDisposable
         _dbContext.Rooms.Add(room);
         await _dbContext.SaveChangesAsync();
 
-        // Act
+        
         var result = await _roomService.GetRoomByIdAsync(roomId);
 
         Assert.Equal(roomId, result.RoomId);
@@ -124,7 +125,7 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task GetRoomByIdAsync_ShouldThrowNotFoundException_WhenRoomDoesNotExist()
     {
-        // Act & Assert
+        
         await Assert.ThrowsAsync<NotFoundException>(() => 
             _roomService.GetRoomByIdAsync(Guid.NewGuid()));
     }
@@ -132,9 +133,14 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task CreateRoomAsync_ShouldCreateRoom_WhenValidInput()
     {
-        // Arrange
+        
+        var hotel = new Hotel { HotelId = Guid.NewGuid(), HotelName = "Test Hotel",Address = "Test Address", PhoneNumber = "1234567890"};
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
         var dto = new CreateRoomDto 
         { 
+            HotelId = hotel.HotelId,
             RoomNumber = "101", 
             Description = "Test Room", 
             PricePerNight = 100, 
@@ -144,10 +150,10 @@ public class RoomServiceIntegrationTests : IDisposable
             Availability = true 
         };
 
-        // Act
+        
         await _roomService.CreateRoomAsync(dto);
 
-        // Assert
+        
         var createdRoom = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == "101");
         Assert.NotNull(createdRoom);
     }
@@ -155,10 +161,24 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task UpdateRoomAsync_ShouldUpdateRoom_WhenRoomExists()
     {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel 
+        { 
+            HotelId = hotelId, 
+            HotelName = "Test Hotel", 
+            Address = "Test Location", 
+            StarRating = 4, 
+            PhoneNumber = "1234567890",
+        };
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
         var roomId = Guid.NewGuid();
         var room = new Room 
         { 
             RoomId = roomId, 
+            HotelId = hotelId, 
             RoomNumber = "101", 
             Description = "Test Room", 
             PricePerNight = 100, 
@@ -172,6 +192,7 @@ public class RoomServiceIntegrationTests : IDisposable
 
         var dto = new UpdateRoomDto 
         { 
+            HotelId = hotelId, 
             RoomNumber = "102", 
             Description = "Updated Room", 
             PricePerNight = 120, 
@@ -181,11 +202,12 @@ public class RoomServiceIntegrationTests : IDisposable
             Availability = false 
         };
 
-        // Act
+        
         await _roomService.UpdateRoomAsync(roomId, dto);
 
-        // Assert
+        
         var updatedRoom = await _dbContext.Rooms.FindAsync(roomId);
+        Assert.NotNull(updatedRoom);
         Assert.Equal("102", updatedRoom.RoomNumber);
         Assert.Equal("Updated Room", updatedRoom.Description);
         Assert.Equal(120, updatedRoom.PricePerNight);
@@ -198,7 +220,7 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task UpdateRoomAsync_ShouldThrowNotFoundException_WhenRoomDoesNotExist()
     {
-        // Act & Assert
+        
         await Assert.ThrowsAsync<NotFoundException>(() => 
             _roomService.UpdateRoomAsync(Guid.NewGuid(), new UpdateRoomDto()));
     }
@@ -206,7 +228,7 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task DeleteRoomAsync_ShouldDeleteRoom_WhenRoomExists()
     {
-        // Arrange
+        
         var roomId = Guid.NewGuid();
         var room = new Room 
         { 
@@ -222,10 +244,10 @@ public class RoomServiceIntegrationTests : IDisposable
         _dbContext.Rooms.Add(room);
         await _dbContext.SaveChangesAsync();
 
-        // Act
+        
         await _roomService.DeleteRoomAsync(roomId);
 
-        // Assert
+        
         var deletedRoom = await _dbContext.Rooms.FindAsync(roomId);
         Assert.Null(deletedRoom);
     }
@@ -233,7 +255,7 @@ public class RoomServiceIntegrationTests : IDisposable
     [Fact]
     public async Task DeleteRoomAsync_ShouldThrowNotFoundException_WhenRoomDoesNotExist()
     {
-        // Act & Assert
+        
         await Assert.ThrowsAsync<NotFoundException>(() => 
             _roomService.DeleteRoomAsync(Guid.NewGuid()));
     }

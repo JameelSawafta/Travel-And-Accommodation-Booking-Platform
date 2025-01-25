@@ -1,6 +1,7 @@
 using AutoMapper;
 using Moq;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
@@ -11,14 +12,16 @@ namespace TravelAndAccommodationBookingPlatform.Tests.UnitTests.Services;
 public class RoomServiceTests
 {
     private readonly Mock<IRoomRepository> _mockRoomRepository;
+    private readonly Mock<IHotelRepository> _mockHotelRepository;
     private readonly Mock<IMapper> _mockMapper;
     private readonly RoomService _roomService;
 
     public RoomServiceTests()
     {
         _mockRoomRepository = new Mock<IRoomRepository>();
+        _mockHotelRepository = new Mock<IHotelRepository>();
         _mockMapper = new Mock<IMapper>();
-        _roomService = new RoomService(_mockRoomRepository.Object, _mockMapper.Object);
+        _roomService = new RoomService(_mockRoomRepository.Object, _mockHotelRepository.Object, _mockMapper.Object);
     }
 
     [Fact]
@@ -27,8 +30,8 @@ public class RoomServiceTests
         
         var rooms = new List<Room>
         {
-            new Room { RoomId = Guid.NewGuid(), RoomNumber = "101" },
-            new Room { RoomId = Guid.NewGuid(), RoomNumber = "102" }
+            new Room { RoomId = Guid.NewGuid(), RoomNumber = "101", HotelId = Guid.NewGuid() },
+            new Room { RoomId = Guid.NewGuid(), RoomNumber = "102", HotelId = Guid.NewGuid() }
         };
         var paginatedRooms = (rooms.AsEnumerable(), 2);
         var roomDtos = rooms.Select(r => new RoomDto { RoomId = r.RoomId, RoomNumber = r.RoomNumber }).ToList();
@@ -66,7 +69,7 @@ public class RoomServiceTests
     {
         
         var roomId = Guid.NewGuid();
-        var room = new Room { RoomId = roomId, RoomNumber = "101" };
+        var room = new Room { RoomId = roomId, RoomNumber = "101", HotelId = Guid.NewGuid() };
         var roomDto = new RoomDto { RoomId = roomId, RoomNumber = "101" };
 
         _mockRoomRepository.Setup(repo => repo.GetRoomByIdAsync(roomId))
@@ -99,8 +102,23 @@ public class RoomServiceTests
     public async Task CreateRoomAsync_ShouldCreateRoom_WhenValidInput()
     {
         
-        var dto = new CreateRoomDto { RoomNumber = "101" };
-        var room = new Room { RoomId = Guid.NewGuid(), RoomNumber = "101" };
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel" };
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync(hotel);
+
+        var dto = new CreateRoomDto 
+        { 
+            RoomNumber = "101", 
+            Description = "Test Room", 
+            PricePerNight = 100, 
+            RoomType = RoomType.Single, 
+            AdultsCapacity = 2, 
+            ChildrenCapacity = 1, 
+            Availability = true,
+            HotelId = hotelId
+        };
+        var room = new Room { RoomId = Guid.NewGuid(), RoomNumber = "101", HotelId = hotelId };
 
         _mockMapper.Setup(mapper => mapper.Map<Room>(dto))
             .Returns(room);
@@ -113,12 +131,52 @@ public class RoomServiceTests
     }
 
     [Fact]
+    public async Task CreateRoomAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        var dto = new CreateRoomDto 
+        { 
+            RoomNumber = "101", 
+            Description = "Test Room", 
+            PricePerNight = 100, 
+            RoomType = RoomType.Single, 
+            AdultsCapacity = 2, 
+            ChildrenCapacity = 1, 
+            Availability = true,
+            HotelId = hotelId
+        };
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _roomService.CreateRoomAsync(dto));
+    }
+
+    [Fact]
     public async Task UpdateRoomAsync_ShouldUpdateRoom_WhenRoomExists()
     {
         
         var roomId = Guid.NewGuid();
-        var existingRoom = new Room { RoomId = roomId, RoomNumber = "101" };
-        var dto = new UpdateRoomDto { RoomNumber = "102" };
+        var hotelId = Guid.NewGuid();
+        var existingRoom = new Room { RoomId = roomId, RoomNumber = "101", HotelId = hotelId };
+        var dto = new UpdateRoomDto 
+        { 
+            RoomNumber = "102", 
+            Description = "Updated Room", 
+            PricePerNight = 120, 
+            RoomType = RoomType.Double, 
+            AdultsCapacity = 3, 
+            ChildrenCapacity = 2, 
+            Availability = false,
+            HotelId = hotelId
+        };
+
+        var hotel = new Hotel { HotelId = hotelId, HotelName = "Test Hotel" };
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync(hotel);
 
         _mockRoomRepository.Setup(repo => repo.GetRoomByIdAsync(roomId))
             .ReturnsAsync(existingRoom);
@@ -147,11 +205,40 @@ public class RoomServiceTests
     }
 
     [Fact]
+    public async Task UpdateRoomAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var roomId = Guid.NewGuid();
+        var hotelId = Guid.NewGuid();
+        var existingRoom = new Room { RoomId = roomId, RoomNumber = "101", HotelId = hotelId };
+        var dto = new UpdateRoomDto 
+        { 
+            RoomNumber = "102", 
+            Description = "Updated Room", 
+            PricePerNight = 120, 
+            RoomType = RoomType.Double, 
+            AdultsCapacity = 3, 
+            ChildrenCapacity = 2, 
+            Availability = false,
+            HotelId = hotelId
+        };
+
+        _mockRoomRepository.Setup(repo => repo.GetRoomByIdAsync(roomId))
+            .ReturnsAsync(existingRoom);
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => 
+            _roomService.UpdateRoomAsync(roomId, dto));
+    }
+
+    [Fact]
     public async Task DeleteRoomAsync_ShouldDeleteRoom_WhenRoomExists()
     {
         
         var roomId = Guid.NewGuid();
-        var room = new Room { RoomId = roomId, RoomNumber = "101" };
+        var room = new Room { RoomId = roomId, RoomNumber = "101", HotelId = Guid.NewGuid() };
 
         _mockRoomRepository.Setup(repo => repo.GetRoomByIdAsync(roomId))
             .ReturnsAsync(room);
