@@ -5,7 +5,7 @@ using TravelAndAccommodationBookingPlatform.Domain.Models.ImageDtos;
 
 namespace TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
 
-public class RoomDto
+public class RoomDetailedDto
 {
     public Guid RoomId { get; set; }
     public string RoomNumber { get; set; }

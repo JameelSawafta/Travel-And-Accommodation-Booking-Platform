@@ -32,7 +32,7 @@ public class HotelServiceIntegrationTests : IDisposable
             cfg.CreateMap<Hotel, HotelSearchResultDto>()
                 .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms)); 
 
-            cfg.CreateMap<Room, RoomDto>();
+            cfg.CreateMap<Room, RoomDetailedDto>();
             cfg.CreateMap<Hotel, FeaturedDealDto>();
             cfg.CreateMap<Hotel, HotelDto>();
             cfg.CreateMap<CreateHotelDto, Hotel>();

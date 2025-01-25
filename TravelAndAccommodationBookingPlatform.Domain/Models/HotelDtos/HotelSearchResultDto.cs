@@ -11,5 +11,5 @@ public class HotelSearchResultDto
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public string CityName { get; set; }
-    public List<RoomDto> Rooms { get; set; }
+    public List<RoomDetailedDto> Rooms { get; set; }
 }
