@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAndAccommodationBookingPlatform.API.Validators.HotelValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -10,6 +11,7 @@ namespace TravelAndAccommodationBookingPlatform.API.Controllers;
 [ApiController]
 [Route("api/hotels")]
 [ApiVersion("1.0")]
+[Authorize(Policy = "AdminOnly")]
 public class HotelsController : Controller
 {
     private readonly IHotelService _hotelService;
