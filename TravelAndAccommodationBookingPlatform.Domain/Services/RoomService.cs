@@ -11,11 +11,13 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Services;
 public class RoomService : IRoomService
 {
     private readonly IRoomRepository _roomRepository;
+    private readonly IHotelRepository _hotelRepository;
     private readonly IMapper _mapper;
     
-    public RoomService(IRoomRepository roomRepository, IMapper mapper)
+    public RoomService(IRoomRepository roomRepository, IHotelRepository hotelRepository, IMapper mapper)
     {
         _roomRepository = roomRepository;
+        _hotelRepository = hotelRepository;
         _mapper = mapper;
     }
     
@@ -40,6 +42,11 @@ public class RoomService : IRoomService
 
     public async Task CreateRoomAsync(CreateRoomDto createRoomDto)
     {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(createRoomDto.HotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
         var room = _mapper.Map<Room>(createRoomDto);
         await _roomRepository.CreateRoomAsync(room);
     }
@@ -50,6 +57,11 @@ public class RoomService : IRoomService
         if (room == null)
         {
             throw new NotFoundException("Room not found.");
+        }
+        var hotel = await _hotelRepository.GetHotelByIdAsync(updateRoomDto.HotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
         }
         _mapper.Map(updateRoomDto, room);
         await _roomRepository.UpdateRoomAsync(room);
