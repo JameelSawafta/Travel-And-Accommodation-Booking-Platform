@@ -11,7 +11,7 @@ namespace TravelAndAccommodationBookingPlatform.API.Controllers;
 [ApiController]
 [Route("api/rooms")]
 [ApiVersion("1.0")]
-// [Authorize(Policy = "AdminOnly")]
+[Authorize(Policy = "AdminOnly")]
 public class RoomsController : Controller
 {
     private readonly IRoomService _roomService;
