@@ -83,6 +83,7 @@ public class RoomsController : Controller
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
     /// <response code="404">If the room is not found.</response>
+    /// <response code="409">If the room already exists.</response>
     [HttpPut("{roomId}")]
     public async Task<IActionResult> UpdateRoomAsync(Guid roomId, UpdateRoomDto roomDto)
     {
