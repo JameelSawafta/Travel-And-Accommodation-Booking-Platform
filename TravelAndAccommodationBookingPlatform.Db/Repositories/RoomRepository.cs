@@ -28,6 +28,13 @@ public class RoomRepository : IRoomRepository
     {
         return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
     }
+    
+    public async Task<Room> GetRoomByHotelAndNumberAsync(Guid hotelId, string roomNumber)
+    {
+        return await _context.Rooms
+            .FirstOrDefaultAsync(r => r.HotelId == hotelId && r.RoomNumber == roomNumber);
+    }
+
 
     public async Task CreateRoomAsync(Room room)
     {

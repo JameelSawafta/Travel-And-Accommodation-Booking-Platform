@@ -47,6 +47,11 @@ public class RoomService : IRoomService
         {
             throw new NotFoundException("Hotel not found.");
         }
+        var existingRoom = await _roomRepository.GetRoomByHotelAndNumberAsync(createRoomDto.HotelId, createRoomDto.RoomNumber);
+        if (existingRoom != null)
+        {
+            throw new ConflictException("Room already exists.");
+        }
         var room = _mapper.Map<Room>(createRoomDto);
         await _roomRepository.CreateRoomAsync(room);
     }
@@ -62,6 +67,11 @@ public class RoomService : IRoomService
         if (hotel == null)
         {
             throw new NotFoundException("Hotel not found.");
+        }
+        var existingRoom = await _roomRepository.GetRoomByHotelAndNumberAsync(updateRoomDto.HotelId, updateRoomDto.RoomNumber);
+        if (existingRoom != null && existingRoom.RoomId != roomId)
+        {
+            throw new ConflictException("Room already exists.");
         }
         _mapper.Map(updateRoomDto, room);
         await _roomRepository.UpdateRoomAsync(room);
