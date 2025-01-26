@@ -8,7 +8,7 @@ public class PaginationService : IPaginationService
     public async Task<(IEnumerable<T> Items, int TotalCount)> PaginateAsync<T>(
         IQueryable<T> query, int pageSize, int pageNumber) where T : class
     {
-        if (pageNumber.Equals(0) || pageSize.Equals(0))
+        if (pageNumber <= 0 || pageSize <= 0)
         {
             var totalCount0 = await query.CountAsync();
             var items0 = await query

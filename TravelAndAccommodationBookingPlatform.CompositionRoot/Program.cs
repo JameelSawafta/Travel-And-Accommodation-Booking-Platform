@@ -123,6 +123,9 @@ public class Program
         builder.Services.AddScoped<IBookingService, BookingService>();
         builder.Services.AddScoped<ICityRepository, CityRepository>();
         builder.Services.AddScoped<ICityService, CityService>();
+        builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+        builder.Services.AddScoped<IRoomService, RoomService>();
+        builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         

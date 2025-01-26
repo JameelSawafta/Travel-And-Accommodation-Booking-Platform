@@ -1,4 +1,5 @@
 using AutoMapper;
+using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -11,15 +12,17 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Services;
 public class HotelService : IHotelService
 {
     private readonly IHotelRepository _hotelRepository;
+    private readonly IOwnerRepository _ownerRepository;
+    private readonly ICityRepository _cityRepository;
     private readonly IMapper _mapper;
 
-    public HotelService(IHotelRepository hotelRepository, IMapper mapper)
+    public HotelService(IHotelRepository hotelRepository, IOwnerRepository ownerRepository,ICityRepository cityRepository, IMapper mapper)
     {
         _hotelRepository = hotelRepository;
+        _ownerRepository = ownerRepository;
+        _cityRepository = cityRepository;
         _mapper = mapper;
     }
-    
-    
     
     public async Task<PaginatedList<HotelSearchResultDto>> SearchHotelsAsync(SearchRequestDto searchRequest, int pageSize, int pageNumber)
     {
@@ -40,7 +43,6 @@ public class HotelService : IHotelService
 
         return new PaginatedList<HotelSearchResultDto>(result, pageData);
     }
-    
     
     public async Task<List<FeaturedDealDto>> GetFeaturedDealsAsync(int count)
     {
@@ -84,5 +86,64 @@ public class HotelService : IHotelService
 
         return featuredDeals;
     }
-
+    
+    public async Task<PaginatedList<HotelDto>> GetAllHotelsAsync(int pageNumber, int pageSize)
+    {
+        var (hotels, totalCount) = await _hotelRepository.GetAllHotelsAsync(pageNumber, pageSize);
+        var pageData = new PageData(totalCount, pageSize, pageNumber);
+        var hotelDtos = _mapper.Map<IEnumerable<HotelDto>>(hotels);
+        return new PaginatedList<HotelDto>(hotelDtos.ToList(), pageData);
+    }
+    
+    public async Task<HotelDto> GetHotelByIdAsync(Guid hotelId)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        return _mapper.Map<HotelDto>(hotel);
+    }
+    
+    public async Task CreateHotelAsync(CreateHotelDto hotelDto)
+    {
+        var owner = await _ownerRepository.GetOwnerByIdAsync(hotelDto.OwnerId);
+        if (owner == null)
+        {
+            throw new NotFoundException("Owner not found.");
+        }
+        var city = await _cityRepository.GetCityByIdAsync(hotelDto.CityId);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+        var hotel = _mapper.Map<Hotel>(hotelDto);
+        await _hotelRepository.CreateHotelAsync(hotel);
+    }
+    
+    public async Task UpdateHotelAsync(Guid hotelId, UpdateHotelDto hotelDto)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        var owner = await _ownerRepository.GetOwnerByIdAsync(hotelDto.OwnerId);
+        if (owner == null)
+        {
+            throw new NotFoundException("Owner not found.");
+        }
+        var city = await _cityRepository.GetCityByIdAsync(hotelDto.CityId);
+        if (city == null)
+        {
+            throw new NotFoundException("City not found.");
+        }
+        _mapper.Map(hotelDto, hotel);
+        await _hotelRepository.UpdateHotelAsync(hotel);
+    }
+    
+    public async Task DeleteHotelAsync(Guid hotelId)
+    {
+        await _hotelRepository.DeleteHotelAsync(hotelId);
+    }
 }

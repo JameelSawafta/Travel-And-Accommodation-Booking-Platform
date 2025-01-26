@@ -1,15 +1,16 @@
-using TravelAndAccommodationBookingPlatform.Domain.Entities;
-using TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
-
 namespace TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
 
-public class HotelSearchResultDto
+public class HotelDto
 {
     public Guid HotelId { get; set; }
+    public Guid CityId { get; set; }
     public string HotelName { get; set; }
+    public string? Description { get; set; }
     public int StarRating { get; set; }
+    public Guid OwnerId { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-    public string CityName { get; set; }
-    public List<RoomDetailedDto> Rooms { get; set; }
+    public string? ThumbnailUrl { get; set; }
 }

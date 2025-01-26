@@ -13,7 +13,7 @@ public class RoomProfile : Profile
         CreateMap<RoomDiscount, RoomDiscountDto>();
 
         
-        CreateMap<Room, RoomDto>()
+        CreateMap<Room, RoomDetailedDto>()
             .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId))
             .ForMember(dest => dest.RoomNumber, opt => opt.MapFrom(src => src.RoomNumber))
             .ForMember(dest => dest.PricePerNight, opt => opt.MapFrom(src => src.PricePerNight))
@@ -25,5 +25,9 @@ public class RoomProfile : Profile
             .ForMember(dest => dest.RoomAmenities, opt => opt.MapFrom(src => src.RoomAmenities.Select(ra => ra.Amenity)))
             .ForMember(dest => dest.DiscountPercentageValue, opt => opt.MapFrom(src => src.RoomDiscounts.FirstOrDefault().Discount.DiscountPercentageValue))
             .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
+        CreateMap<Room, RoomDto>()
+            .ForMember(dest => dest.RoomType, opt => opt.MapFrom(src => src.RoomType.ToString()));
+        CreateMap<CreateRoomDto, Room>();
+        CreateMap<UpdateRoomDto, Room>();
     }
 }

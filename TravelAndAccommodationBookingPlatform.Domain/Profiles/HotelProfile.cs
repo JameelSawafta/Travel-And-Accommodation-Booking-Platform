@@ -28,5 +28,9 @@ public class HotelProfile : Profile
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.CityName))
             .ForMember(dest => dest.PricePerNight, opt => opt.MapFrom(src => src.Rooms.Min(r => r.PricePerNight)))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.CityName));
+
+        CreateMap<Hotel, HotelDto>();
+        CreateMap<CreateHotelDto, Hotel>();
+        CreateMap<UpdateHotelDto, Hotel>();
     }
 }
