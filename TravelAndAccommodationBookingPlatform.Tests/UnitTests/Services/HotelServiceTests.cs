@@ -4,6 +4,7 @@ using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
+using TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
@@ -34,8 +35,13 @@ public class HotelServiceTests
     [Fact]
     public async Task SearchHotelsAsync_ShouldThrowNotFoundException_WhenNoHotelsFound()
     {
-        var searchRequest = new SearchRequestDto { Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2) };
-        _mockHotelRepository.Setup(repo => repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
+        var searchRequest = new SearchRequestDto
+        {
+            Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now,
+            CheckOutDate = DateTime.Now.AddDays(2)
+        };
+        _mockHotelRepository.Setup(repo =>
+                repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((new List<Hotel>(), 0));
 
         await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.SearchHotelsAsync(searchRequest, 10, 1));
@@ -44,8 +50,13 @@ public class HotelServiceTests
     [Fact]
     public async Task SearchHotelsAsync_ShouldThrowNotFoundException_WhenInvalidPageNumber()
     {
-        var searchRequest = new SearchRequestDto { Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2) };
-        _mockHotelRepository.Setup(repo => repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
+        var searchRequest = new SearchRequestDto
+        {
+            Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now,
+            CheckOutDate = DateTime.Now.AddDays(2)
+        };
+        _mockHotelRepository.Setup(repo =>
+                repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((new List<Hotel> { new Hotel() }, 1));
 
         await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.SearchHotelsAsync(searchRequest, 10, 2));
@@ -54,11 +65,17 @@ public class HotelServiceTests
     [Fact]
     public async Task SearchHotelsAsync_ShouldReturnPaginatedList_WhenSuccessfulSearch()
     {
-        var searchRequest = new SearchRequestDto { Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now, CheckOutDate = DateTime.Now.AddDays(2) };
+        var searchRequest = new SearchRequestDto
+        {
+            Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now,
+            CheckOutDate = DateTime.Now.AddDays(2)
+        };
         var hotels = new List<Hotel> { new Hotel { HotelId = Guid.NewGuid(), HotelName = "Test Hotel" } };
-        var hotelDtos = new List<HotelSearchResultDto> { new HotelSearchResultDto { HotelId = Guid.NewGuid(), HotelName = "Test Hotel" } };
+        var hotelDtos = new List<HotelSearchResultDto>
+            { new HotelSearchResultDto { HotelId = Guid.NewGuid(), HotelName = "Test Hotel" } };
 
-        _mockHotelRepository.Setup(repo => repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
+        _mockHotelRepository.Setup(repo =>
+                repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((hotels, 1));
         _mockMapper.Setup(mapper => mapper.Map<IEnumerable<HotelSearchResultDto>>(It.IsAny<IEnumerable<Hotel>>()))
             .Returns(hotelDtos);
@@ -98,7 +115,11 @@ public class HotelServiceTests
                         {
                             new RoomDiscount
                             {
-                                Discount = new Discount { DiscountPercentageValue = 0.1, ValidFrom = DateTime.Now.AddDays(-1), ValidTo = DateTime.Now.AddDays(1) }
+                                Discount = new Discount
+                                {
+                                    DiscountPercentageValue = 0.1, ValidFrom = DateTime.Now.AddDays(-1),
+                                    ValidTo = DateTime.Now.AddDays(1)
+                                }
                             }
                         }
                     }
@@ -236,19 +257,19 @@ public class HotelServiceTests
         var ownerId = Guid.NewGuid();
         var cityId = Guid.NewGuid();
 
-        var existingHotel = new Hotel 
-        { 
-            HotelId = hotelId, 
-            HotelName = "Old Name", 
-            OwnerId = ownerId, 
-            CityId = cityId 
+        var existingHotel = new Hotel
+        {
+            HotelId = hotelId,
+            HotelName = "Old Name",
+            OwnerId = ownerId,
+            CityId = cityId
         };
 
-        var dto = new UpdateHotelDto 
-        { 
-            HotelName = "New Name", 
-            OwnerId = ownerId, 
-            CityId = cityId 
+        var dto = new UpdateHotelDto
+        {
+            HotelName = "New Name",
+            OwnerId = ownerId,
+            CityId = cityId
         };
 
         _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
@@ -261,7 +282,7 @@ public class HotelServiceTests
             .ReturnsAsync(new City { CityId = cityId });
 
         _mockMapper.Setup(mapper => mapper.Map(dto, existingHotel))
-            .Callback<UpdateHotelDto, Hotel>((src, dest) => 
+            .Callback<UpdateHotelDto, Hotel>((src, dest) =>
             {
                 dest.HotelName = src.HotelName;
                 dest.OwnerId = src.OwnerId;
@@ -283,7 +304,8 @@ public class HotelServiceTests
         _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
             .ReturnsAsync((Hotel)null);
 
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.UpdateHotelAsync(hotelId, new UpdateHotelDto()));
+        await Assert.ThrowsAsync<NotFoundException>(() =>
+            _hotelService.UpdateHotelAsync(hotelId, new UpdateHotelDto()));
     }
 
     [Fact]
@@ -298,5 +320,69 @@ public class HotelServiceTests
         await _hotelService.DeleteHotelAsync(hotelId);
 
         _mockHotelRepository.Verify(repo => repo.DeleteHotelAsync(hotelId), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetHotelByIdWithRoomsAsync_ShouldReturnHotelDetailedDto_WhenHotelExists()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        var hotel = new Hotel
+        {
+            HotelId = hotelId,
+            HotelName = "Test Hotel",
+            Rooms = new List<Room>
+            {
+                new Room
+                {
+                    RoomId = Guid.NewGuid(),
+                    RoomNumber = "101",
+                    Availability = true
+                }
+            }
+        };
+
+        var hotelDetailedDto = new HotelDetailedDto
+        {
+            HotelId = hotelId,
+            HotelName = "Test Hotel",
+            Rooms = new List<RoomDetailedDto>
+            {
+                new RoomDetailedDto
+                {
+                    RoomId = hotel.Rooms.First().RoomId,
+                    RoomNumber = "101",
+                    Availability = true
+                }
+            }
+        };
+
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdWithRoomsAsync(hotelId))
+            .ReturnsAsync(hotel);
+
+        _mockMapper.Setup(mapper => mapper.Map<HotelDetailedDto>(hotel))
+            .Returns(hotelDetailedDto);
+
+        
+        var result = await _hotelService.GetHotelByIdWithRoomsAsync(hotelId);
+
+        
+        Assert.NotNull(result);
+        Assert.Equal(hotelId, result.HotelId);
+        Assert.Equal("Test Hotel", result.HotelName);
+        Assert.Single(result.Rooms);
+        Assert.Equal("101", result.Rooms.First().RoomNumber);
+    }
+
+    [Fact]
+    public async Task GetHotelByIdWithRoomsAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        
+        var hotelId = Guid.NewGuid();
+        _mockHotelRepository.Setup(repo => repo.GetHotelByIdWithRoomsAsync(hotelId))
+            .ReturnsAsync((Hotel)null);
+
+        
+        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.GetHotelByIdWithRoomsAsync(hotelId));
     }
 }
