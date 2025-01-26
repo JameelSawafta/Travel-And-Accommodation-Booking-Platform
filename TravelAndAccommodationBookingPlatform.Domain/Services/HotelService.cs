@@ -146,4 +146,14 @@ public class HotelService : IHotelService
     {
         await _hotelRepository.DeleteHotelAsync(hotelId);
     }
+
+    public async Task<HotelDetailedDto> GetHotelByIdWithRoomsAsync(Guid hotelId)
+    {
+        var hotel = await _hotelRepository.GetHotelByIdWithRoomsAsync(hotelId);
+        if (hotel == null)
+        {
+            throw new NotFoundException("Hotel not found.");
+        }
+        return _mapper.Map<HotelDetailedDto>(hotel);
+    }
 }

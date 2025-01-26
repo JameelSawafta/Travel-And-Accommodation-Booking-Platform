@@ -13,4 +13,5 @@ public interface IHotelService
     Task CreateHotelAsync(CreateHotelDto hotelDto);
     Task UpdateHotelAsync(Guid hotelId, UpdateHotelDto hotelDto);
     Task DeleteHotelAsync(Guid hotelId);
+    Task<HotelDetailedDto> GetHotelByIdWithRoomsAsync(Guid hotelId);
 }
