@@ -144,11 +144,6 @@ public class HotelService : IHotelService
     
     public async Task DeleteHotelAsync(Guid hotelId)
     {
-        var hotel = await _hotelRepository.GetHotelByIdAsync(hotelId);
-        if (hotel == null)
-        {
-            throw new NotFoundException("Hotel not found.");
-        }
         await _hotelRepository.DeleteHotelAsync(hotelId);
     }
 }

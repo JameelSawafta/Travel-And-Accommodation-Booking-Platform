@@ -51,7 +51,10 @@ public class RoomRepository : IRoomRepository
     public async Task DeleteRoomAsync(Guid roomId)
     {
         var room = await GetRoomByIdAsync(roomId);
-        _context.Rooms.Remove(room);
-        await _context.SaveChangesAsync();
+        if (room != null)
+        {
+            _context.Rooms.Remove(room);
+            await _context.SaveChangesAsync();
+        }
     }
 }

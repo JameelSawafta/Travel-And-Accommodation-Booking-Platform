@@ -79,11 +79,6 @@ public class RoomService : IRoomService
 
     public async Task DeleteRoomAsync(Guid roomId)
     {
-        var room = await _roomRepository.GetRoomByIdAsync(roomId);
-        if (room == null)
-        {
-            throw new NotFoundException("Room not found.");
-        }
         await _roomRepository.DeleteRoomAsync(roomId);
     }
 }

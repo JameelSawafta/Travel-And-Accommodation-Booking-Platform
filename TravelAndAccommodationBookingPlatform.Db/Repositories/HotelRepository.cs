@@ -153,7 +153,10 @@ public class HotelRepository : IHotelRepository
     public async Task DeleteHotelAsync(Guid hotelId)
     {
         var hotel = await GetHotelByIdAsync(hotelId);
-        _context.Hotels.Remove(hotel);
-        await _context.SaveChangesAsync();
+        if (hotel != null)
+        {
+            _context.Hotels.Remove(hotel);
+            await _context.SaveChangesAsync();
+        }
     }
 }

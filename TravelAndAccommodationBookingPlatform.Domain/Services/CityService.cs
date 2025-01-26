@@ -93,11 +93,6 @@ public class CityService : ICityService
     
     public async Task DeleteCityAsync(Guid cityId)
     {
-        var city = await _cityRepository.GetCityByIdAsync(cityId);
-        if (city == null)
-        {
-            throw new NotFoundException("City not found.");
-        }
         await _cityRepository.DeleteCityAsync(cityId);
     }
 }

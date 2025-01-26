@@ -63,7 +63,10 @@ public class CityRepository : ICityRepository
     public async Task DeleteCityAsync(Guid cityId)
     {
         var city = await GetCityByIdAsync(cityId);
-        _context.Cities.Remove(city);
-        await _context.SaveChangesAsync();
+        if (city != null)
+        {
+            _context.Cities.Remove(city);
+            await _context.SaveChangesAsync();
+        }
     }
 }
