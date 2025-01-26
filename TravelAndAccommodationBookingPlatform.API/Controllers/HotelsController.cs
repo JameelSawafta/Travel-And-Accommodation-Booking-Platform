@@ -61,7 +61,6 @@ public class HotelsController : Controller
     /// <response code="400">If the hotel is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
-    /// <response code="409">If the hotel already exists.</response>
     [HttpPost]
     public async Task<IActionResult> CreateHotelAsync(CreateHotelDto hotelDto)
     {
