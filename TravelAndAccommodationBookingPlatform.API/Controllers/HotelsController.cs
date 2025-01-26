@@ -81,7 +81,7 @@ public class HotelsController : Controller
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
     /// <response code="404">If the hotel is not found.</response>
-    [HttpPut]
+    [HttpPut("{hotelId}")]
     public async Task<IActionResult> UpdateHotelAsync(Guid hotelId, UpdateHotelDto hotelDto)
     {
         var validator = new UpdateHotelValidator();
