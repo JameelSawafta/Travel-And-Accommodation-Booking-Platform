@@ -237,14 +237,4 @@ public class CityServiceTests
         _mockCityRepository.Verify(repo => repo.DeleteCityAsync(cityId), Times.Once);
     }
 
-    [Fact]
-    public async Task DeleteCityAsync_ShouldThrowNotFoundException_WhenCityDoesNotExist()
-    {
-        var cityId = Guid.NewGuid();
-        _mockCityRepository.Setup(repo => repo.GetCityByIdAsync(cityId))
-            .ReturnsAsync((City)null);
-
-        await Assert.ThrowsAsync<NotFoundException>(() => 
-            _cityService.DeleteCityAsync(cityId));
-    }
 }

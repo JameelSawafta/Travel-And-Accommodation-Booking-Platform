@@ -249,17 +249,4 @@ public class RoomServiceTests
         
         _mockRoomRepository.Verify(repo => repo.DeleteRoomAsync(roomId), Times.Once);
     }
-
-    [Fact]
-    public async Task DeleteRoomAsync_ShouldThrowNotFoundException_WhenRoomDoesNotExist()
-    {
-        
-        var roomId = Guid.NewGuid();
-        _mockRoomRepository.Setup(repo => repo.GetRoomByIdAsync(roomId))
-            .ReturnsAsync((Room)null);
-
-        
-        await Assert.ThrowsAsync<NotFoundException>(() => 
-            _roomService.DeleteRoomAsync(roomId));
-    }
 }

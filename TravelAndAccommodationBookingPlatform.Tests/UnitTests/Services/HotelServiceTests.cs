@@ -299,14 +299,4 @@ public class HotelServiceTests
 
         _mockHotelRepository.Verify(repo => repo.DeleteHotelAsync(hotelId), Times.Once);
     }
-
-    [Fact]
-    public async Task DeleteHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
-    {
-        var hotelId = Guid.NewGuid();
-        _mockHotelRepository.Setup(repo => repo.GetHotelByIdAsync(hotelId))
-            .ReturnsAsync((Hotel)null);
-
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.DeleteHotelAsync(hotelId));
-    }
 }

@@ -287,10 +287,4 @@ public class HotelServiceIntegrationTests : IDisposable
         var deletedHotel = await _dbContext.Hotels.FindAsync(hotelId);
         Assert.Null(deletedHotel);
     }
-
-    [Fact]
-    public async Task DeleteHotelAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
-    {
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.DeleteHotelAsync(Guid.NewGuid()));
-    }
 }

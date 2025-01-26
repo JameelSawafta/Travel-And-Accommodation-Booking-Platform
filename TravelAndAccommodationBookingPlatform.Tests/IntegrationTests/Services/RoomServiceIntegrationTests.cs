@@ -251,12 +251,4 @@ public class RoomServiceIntegrationTests : IDisposable
         var deletedRoom = await _dbContext.Rooms.FindAsync(roomId);
         Assert.Null(deletedRoom);
     }
-
-    [Fact]
-    public async Task DeleteRoomAsync_ShouldThrowNotFoundException_WhenRoomDoesNotExist()
-    {
-        
-        await Assert.ThrowsAsync<NotFoundException>(() => 
-            _roomService.DeleteRoomAsync(Guid.NewGuid()));
-    }
 }

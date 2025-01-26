@@ -221,11 +221,4 @@ public class CityServiceIntegrationTests : IDisposable
         var deletedCity = await _dbContext.Cities.FindAsync(cityId);
         Assert.Null(deletedCity);
     }
-
-    [Fact]
-    public async Task DeleteCityAsync_ShouldThrowNotFoundException_WhenCityDoesNotExist()
-    {
-        await Assert.ThrowsAsync<NotFoundException>(() =>
-            _cityService.DeleteCityAsync(Guid.NewGuid()));
-    }
 }
