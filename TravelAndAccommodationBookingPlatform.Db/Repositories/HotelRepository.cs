@@ -159,4 +159,35 @@ public class HotelRepository : IHotelRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<Hotel> GetHotelByIdWithRoomsAsync(Guid hotelId)
+    {
+        return await _context.Hotels
+            .Include(h => h.City)
+            .Include(h => h.Rooms)
+            .ThenInclude(r => r.Images)
+            .Include(h => h.Rooms)
+            .ThenInclude(r => r.RoomAmenities)
+            .ThenInclude(ra => ra.Amenity)
+            .Include(h => h.Rooms)
+            .ThenInclude(r => r.RoomDiscounts)
+            .ThenInclude(rd => rd.Discount)
+            .Include(h => h.Reviews)
+            .ThenInclude(r => r.User)
+            .Select(h => new Hotel
+            {
+                HotelId = h.HotelId,
+                HotelName = h.HotelName,
+                StarRating = h.StarRating,
+                Description = h.Description,
+                ThumbnailUrl = h.ThumbnailUrl,
+                Address = h.Address,
+                Latitude = h.Latitude,
+                Longitude = h.Longitude,
+                City = h.City,
+                Reviews = h.Reviews.ToList(),
+                Rooms = h.Rooms.Where(r => r.Availability == true).ToList()
+            })
+            .FirstOrDefaultAsync(h => h.HotelId == hotelId);
+    }
 }
