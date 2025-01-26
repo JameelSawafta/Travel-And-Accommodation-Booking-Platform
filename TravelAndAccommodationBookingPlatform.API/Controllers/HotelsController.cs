@@ -76,7 +76,7 @@ public class HotelsController : Controller
     /// <param name="hotelId">The ID of the hotel to update.</param>
     /// <param name="hotelDto">The hotel to update.</param>
     /// <returns>A response with status code 204 (No Content).</returns>
-    /// <response code="200">Returns the updated hotel.</response>
+    /// <response code="204">Returns a response with status code 204 (No Content).</response>
     /// <response code="400">If the hotel is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
@@ -98,7 +98,6 @@ public class HotelsController : Controller
     /// <response code="204">Returns a response with status code 204 (No Content).</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
-    /// <response code="404">If the hotel is not found.</response>
     [HttpDelete("{hotelId}")]
     public async Task<IActionResult> DeleteHotelAsync(Guid hotelId)
     {

@@ -78,7 +78,7 @@ public class RoomsController : Controller
     /// <param name="roomId">The ID of the room to update.</param>
     /// <param name="roomDto">The room to update.</param>
     /// <returns>A response with status code 204 (No Content).</returns>
-    /// <response code="200">Returns the updated room.</response>
+    /// <response code="204">Returns a response with status code 204 (No Content).</response>
     /// <response code="400">If the room is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
@@ -101,7 +101,6 @@ public class RoomsController : Controller
     /// <response code="204">Returns a response with status code 204 (No Content).</response>
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
-    /// <response code="404">If the room is not found.</response>
     [HttpDelete("{roomId}")]
     public async Task<IActionResult> DeleteRoomAsync(Guid roomId)
     {
