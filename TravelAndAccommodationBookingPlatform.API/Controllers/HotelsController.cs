@@ -11,7 +11,7 @@ namespace TravelAndAccommodationBookingPlatform.API.Controllers;
 [ApiController]
 [Route("api/hotels")]
 [ApiVersion("1.0")]
-[Authorize(Policy = "AdminOnly")]
+[Authorize]
 public class HotelsController : Controller
 {
     private readonly IHotelService _hotelService;
@@ -32,6 +32,7 @@ public class HotelsController : Controller
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
     [HttpGet]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<PaginatedList<HotelDto>> GetHotelsAsync(int pageSize, int pageNumber)
     {
         return await _hotelService.GetAllHotelsAsync(pageNumber, pageSize);
@@ -47,6 +48,7 @@ public class HotelsController : Controller
     /// <response code="403">If the user is not authorized.</response>
     /// <response code="404">If the hotel is not found.</response>
     [HttpGet("{hotelId}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<HotelDto> GetHotelByIdAsync(Guid hotelId)
     {
         return await _hotelService.GetHotelByIdAsync(hotelId);
@@ -62,6 +64,7 @@ public class HotelsController : Controller
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
     [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> CreateHotelAsync(CreateHotelDto hotelDto)
     {
         var validator = new CreateHotelValidator();
@@ -82,6 +85,7 @@ public class HotelsController : Controller
     /// <response code="403">If the user is not authorized.</response>
     /// <response code="404">If the hotel is not found.</response>
     [HttpPut("{hotelId}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> UpdateHotelAsync(Guid hotelId, UpdateHotelDto hotelDto)
     {
         var validator = new UpdateHotelValidator();
@@ -99,9 +103,25 @@ public class HotelsController : Controller
     /// <response code="401">If the user is not authenticated.</response>
     /// <response code="403">If the user is not authorized.</response>
     [HttpDelete("{hotelId}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteHotelAsync(Guid hotelId)
     {
         await _hotelService.DeleteHotelAsync(hotelId);
         return NoContent();
+    }
+    
+    /// <summary>
+    /// Retrieves a hotel by ID with rooms.
+    /// </summary>
+    /// <param name="hotelId">The ID of the hotel.</param>
+    /// <returns>A hotel with rooms.</returns>
+    /// <response code="200">Returns the hotel with rooms.</response>
+    /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="404">If the hotel is not found.</response>
+    [HttpGet("{hotelId}/rooms")]
+    [Authorize(Policy = "UserOrAdmin")]
+    public async Task<HotelDetailedDto> GetHotelByIdWithRoomsAsync(Guid hotelId)
+    {
+        return await _hotelService.GetHotelByIdWithRoomsAsync(hotelId);
     }
 }
