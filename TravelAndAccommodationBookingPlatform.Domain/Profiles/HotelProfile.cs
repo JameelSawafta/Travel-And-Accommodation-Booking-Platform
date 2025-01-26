@@ -32,5 +32,8 @@ public class HotelProfile : Profile
         CreateMap<Hotel, HotelDto>();
         CreateMap<CreateHotelDto, Hotel>();
         CreateMap<UpdateHotelDto, Hotel>();
+
+        CreateMap<Hotel, HotelDetailedDto>()
+            .ForMember(dest => dest.Rooms, opt => opt.MapFrom(src => src.Rooms));
     }
 }

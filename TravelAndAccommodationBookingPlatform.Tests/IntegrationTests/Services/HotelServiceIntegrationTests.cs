@@ -5,6 +5,7 @@ using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
+using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
@@ -39,6 +40,8 @@ public class HotelServiceIntegrationTests : IDisposable
             cfg.CreateMap<Hotel, HotelDto>();
             cfg.CreateMap<CreateHotelDto, Hotel>();
             cfg.CreateMap<UpdateHotelDto, Hotel>();
+            cfg.CreateMap<Hotel, HotelDetailedDto>();
+            cfg.CreateMap<City, CityDto>();
         });
         var mapper = mapperConfig.CreateMapper();
 
@@ -286,5 +289,61 @@ public class HotelServiceIntegrationTests : IDisposable
 
         var deletedHotel = await _dbContext.Hotels.FindAsync(hotelId);
         Assert.Null(deletedHotel);
+    }
+    
+    [Fact]
+    public async Task GetHotelByIdWithRoomsAsync_ShouldReturnHotelDetailedDto_WhenHotelExists()
+    {
+        var hotelId = Guid.NewGuid();
+        var city = new City { CityId = Guid.NewGuid(), CityName = "Test City", Country = "Test Country" };
+        var hotel = new Hotel
+        {
+            HotelId = hotelId,
+            HotelName = "Test Hotel",
+            Address = "123 Test Street",
+            PhoneNumber = "123-456-7890",
+            City = city,
+            Rooms = new List<Room>
+            {
+                new Room
+                {
+                    RoomId = Guid.NewGuid(),
+                    RoomNumber = "101",
+                    Description = "Test Room Description",
+                    Availability = true
+                }
+            },
+            Reviews = new List<Review>
+            {
+                new Review
+                {
+                    ReviewId = Guid.NewGuid(),
+                    UserId = Guid.NewGuid(),
+                    Rating = 5,
+                    Comment = "Great stay!",
+                    CreatedAt = DateTime.Now,
+                }
+            }
+        };
+
+        _dbContext.Cities.Add(city);
+        _dbContext.Hotels.Add(hotel);
+        await _dbContext.SaveChangesAsync();
+
+        var result = await _hotelService.GetHotelByIdWithRoomsAsync(hotelId);
+
+        Assert.NotNull(result);
+        Assert.Equal(hotelId, result.HotelId);
+        Assert.Equal("Test Hotel", result.HotelName);
+        Assert.Single(result.Rooms);
+        Assert.Equal("101", result.Rooms.First().RoomNumber);
+    }
+
+    [Fact]
+    public async Task GetHotelByIdWithRoomsAsync_ShouldThrowNotFoundException_WhenHotelDoesNotExist()
+    {
+        var hotelId = Guid.NewGuid();
+
+        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.GetHotelByIdWithRoomsAsync(hotelId));
     }
 }
