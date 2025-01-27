@@ -75,7 +75,7 @@ public class HotelServiceIntegrationTests : IDisposable
                     AdultsCapacity = 2,
                     ChildrenCapacity = 1,
                     Availability = true,
-                    Bookings = new List<Booking>()
+                    BookingDetails = new List<BookingDetail>()
                 }
             }
         };
@@ -97,6 +97,7 @@ public class HotelServiceIntegrationTests : IDisposable
         Assert.NotNull(result);
         Assert.Single(result.Items);
         Assert.Equal("Test Hotel", result.Items.First().HotelName);
+        Assert.Equal(10, result.PageData.PageSize);
     }
 
     [Fact]
