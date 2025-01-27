@@ -15,8 +15,8 @@ public class Room
     public bool Availability { get; set; }
 
     public Hotel Hotel { get; set; }
-    public ICollection<Booking> Bookings { get; set; }
     public ICollection<RoomAmenity> RoomAmenities { get; set; }
     public ICollection<RoomDiscount> RoomDiscounts { get; set; }
     public ICollection<Image> Images { get; set; }
+    public ICollection<BookingDetail> BookingDetails { get; set; }
 }
