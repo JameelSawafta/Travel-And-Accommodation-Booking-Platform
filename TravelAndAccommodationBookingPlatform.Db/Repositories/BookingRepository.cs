@@ -20,12 +20,14 @@ public class BookingRepository : IBookingRepository
     
     public async Task<List<Hotel>> GetRecentlyVisitedHotelsAsync(Guid userId, int count)
     {
-        var hotelIds = await _context.Bookings
-            .Where(b => b.UserId == userId && b.CheckOutDate <= DateTime.Now && b.Status == BookingStatus.Confirmed)
-            .OrderByDescending(b => b.CheckOutDate) 
-            .Select(b => b.Room.HotelId) 
-            .Distinct() 
-            .Take(count) 
+        var hotelIds = await _context.BookingDetails
+            .Include(bd => bd.Booking) 
+            .Include(bd => bd.Room)
+            .Where(bd => bd.Booking.UserId == userId && bd.CheckOutDate <= DateTime.Now && bd.Booking.Status == BookingStatus.Confirmed)
+            .OrderByDescending(bd => bd.CheckOutDate)
+            .Select(bd => bd.Room.HotelId)
+            .Distinct()
+            .Take(count)
             .ToListAsync();
 
         var hotels = await _context.Hotels

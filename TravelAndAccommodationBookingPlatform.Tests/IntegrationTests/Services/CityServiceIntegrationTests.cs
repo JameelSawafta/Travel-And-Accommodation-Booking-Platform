@@ -4,6 +4,7 @@ using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
@@ -73,11 +74,15 @@ public class CityServiceIntegrationTests : IDisposable
                             RoomId = Guid.NewGuid(),
                             RoomNumber = "101",
                             Description = "Test Room Description",
-                            Bookings = new List<Booking>
+                            BookingDetails = new List<BookingDetail>
                             {
-                                new Booking
+                                new BookingDetail
                                 {
-                                    BookingId = Guid.NewGuid()
+                                    Booking = new Booking
+                                    {
+                                        BookingId = Guid.NewGuid(),
+                                        Status = BookingStatus.Confirmed
+                                    }
                                 }
                             }
                         }
@@ -93,6 +98,7 @@ public class CityServiceIntegrationTests : IDisposable
         Assert.NotNull(result);
         Assert.Single(result);
         Assert.Equal("Test City", result.First().CityName);
+        Assert.Equal("https://example.com/test.jpg", result.First().ThumbnailUrl);
     }
 
     [Fact]

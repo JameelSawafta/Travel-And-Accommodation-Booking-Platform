@@ -18,6 +18,7 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Owner> Owners { get; set; }
     public DbSet<Image> Images { get; set; }
+    public DbSet<BookingDetail> BookingDetails { get; set; }
     
     public TravelAndAccommodationBookingPlatformDbContext(DbContextOptions<TravelAndAccommodationBookingPlatformDbContext> options) : base(options)
     {

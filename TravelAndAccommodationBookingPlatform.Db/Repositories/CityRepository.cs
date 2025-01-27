@@ -17,16 +17,18 @@ public class CityRepository : ICityRepository
         _context = context;
         _paginationService = paginationService;
     }
-
+    
     public async Task<List<City>> GetTrendingDestinationsAsync(int count)
     {
         return await _context.Cities
-            .Include(c => c.Hotels)
+            .Include(c => c.Hotels) 
             .ThenInclude(h => h.Rooms)
-            .ThenInclude(r => r.Bookings)
+            .ThenInclude(r => r.BookingDetails)
+            .ThenInclude(bd => bd.Booking)
             .OrderByDescending(c => c.Hotels
                 .Sum(h => h.Rooms
-                    .Sum(r => r.Bookings.Count(b => b.Status == BookingStatus.Confirmed))))
+                    .Sum(r => r.BookingDetails
+                        .Count(bd => bd.Booking.Status == BookingStatus.Confirmed))))
             .Take(count)
             .ToListAsync();
     }
