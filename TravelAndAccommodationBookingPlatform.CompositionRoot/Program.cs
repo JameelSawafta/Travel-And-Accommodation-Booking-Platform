@@ -126,6 +126,8 @@ public class Program
         builder.Services.AddScoped<IRoomRepository, RoomRepository>();
         builder.Services.AddScoped<IRoomService, RoomService>();
         builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+        builder.Services.AddScoped<ICartRepository, CartRepository>();
+        builder.Services.AddScoped<ICartService, CartService>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         
