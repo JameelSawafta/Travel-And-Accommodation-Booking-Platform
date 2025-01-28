@@ -17,7 +17,7 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(p => p.Status).HasConversion<int>().IsRequired();
 
         builder.HasOne(p => p.Booking)
-            .WithMany(b => b.Payments)
-            .HasForeignKey(p => p.BookingId);
+            .WithOne(b => b.Payment)
+            .HasForeignKey<Payment>(p => p.BookingId);
     }
 }
