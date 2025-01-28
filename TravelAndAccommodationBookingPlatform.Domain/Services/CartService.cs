@@ -35,13 +35,30 @@ public class CartService : ICartService
         {
             throw new NotFoundException("Room not found or not available.");
         }
+        
         var hasDateConflict = await _cartRepository.HasDateConflictAsync(cartDto.UserId, cartDto.RoomId, cartDto.CheckInDate, cartDto.CheckOutDate);
         if (hasDateConflict)
         {
             throw new ConflictException("Date conflict with existing cart items.");
         }
         var cartItem = _mapper.Map<Cart>(cartDto);
-        cartItem.Price = room.PricePerNight * (cartDto.CheckOutDate - cartDto.CheckInDate).Days;
+        
+        var numberOfNights = (cartDto.CheckOutDate - cartDto.CheckInDate).Days;
+
+        var highestDiscount = room.RoomDiscounts
+            .Select(rd => rd.Discount)
+            .Where(d => d.ValidFrom <= cartDto.CheckInDate && d.ValidTo >= cartDto.CheckOutDate)
+            .OrderByDescending(d => d.DiscountPercentageValue)
+            .FirstOrDefault();
+        
+        if (highestDiscount != null)
+        {
+            cartItem.Price = room.PricePerNight * (1 - (decimal)highestDiscount.DiscountPercentageValue ) * numberOfNights;
+        }
+        else
+        {
+            cartItem.Price = room.PricePerNight * numberOfNights;
+        }
         await _cartRepository.AddToCartAsync(cartItem);
     }
 

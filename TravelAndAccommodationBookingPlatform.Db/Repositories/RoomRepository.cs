@@ -62,6 +62,8 @@ public class RoomRepository : IRoomRepository
     {
         return await _context.Rooms
             .Include(r => r.BookingDetails)
+            .Include(r => r.RoomDiscounts)
+            .ThenInclude(rd => rd.Discount)
             .FirstOrDefaultAsync(r => r.RoomId == roomId && r.BookingDetails.All(b => b.CheckOutDate <= checkInDate || b.CheckInDate >= checkOutDate) && r.Availability == true);
     }
 }
