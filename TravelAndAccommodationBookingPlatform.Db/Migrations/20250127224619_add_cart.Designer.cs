@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
@@ -11,9 +12,11 @@ using TravelAndAccommodationBookingPlatform.Db.DbContext;
 namespace TravelAndAccommodationBookingPlatform.Db.Migrations
 {
     [DbContext(typeof(TravelAndAccommodationBookingPlatformDbContext))]
-    partial class TravelAndAccommodationBookingPlatformDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250127224619_add_cart")]
+    partial class add_cart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

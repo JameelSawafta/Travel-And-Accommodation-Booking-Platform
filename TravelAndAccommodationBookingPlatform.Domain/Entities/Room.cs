@@ -19,4 +19,5 @@ public class Room
     public ICollection<RoomDiscount> RoomDiscounts { get; set; }
     public ICollection<Image> Images { get; set; }
     public ICollection<BookingDetail> BookingDetails { get; set; }
+    public ICollection<Cart> Carts { get; set; }
 }
