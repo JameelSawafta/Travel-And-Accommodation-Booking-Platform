@@ -33,14 +33,19 @@ public class CartServiceTests
     [Fact]
     public async Task AddToCartAsync_ShouldAddCartItem_WhenValidInput()
     {
-        
         var userId = Guid.NewGuid();
         var roomId = Guid.NewGuid();
         var checkInDate = DateTime.Now.AddDays(1);
         var checkOutDate = DateTime.Now.AddDays(3);
 
         var user = new User { UserId = userId };
-        var room = new Room { RoomId = roomId, PricePerNight = 100, Availability = true };
+        var room = new Room 
+        { 
+            RoomId = roomId, 
+            PricePerNight = 100, 
+            Availability = true,
+            RoomDiscounts = new List<RoomDiscount>()
+        };
         var cartDto = new AddToCartDto
         {
             UserId = userId,
@@ -62,10 +67,8 @@ public class CartServiceTests
         _mockCartRepository.Setup(repo => repo.HasDateConflictAsync(userId, roomId, checkInDate, checkOutDate)).ReturnsAsync(false);
         _mockMapper.Setup(mapper => mapper.Map<Cart>(cartDto)).Returns(cartItem);
 
-        
         await _cartService.AddToCartAsync(cartDto);
 
-        
         _mockCartRepository.Verify(repo => repo.AddToCartAsync(cartItem), Times.Once);
     }
     
