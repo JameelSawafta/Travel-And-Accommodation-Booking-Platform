@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PasswordHashing\PasswordHashing.csproj" />
+      <ProjectReference Include="..\PaymentGateway\PaymentGateway.csproj" />
       <ProjectReference Include="..\TokenGenerator\TokenGenerator.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.API\TravelAndAccommodationBookingPlatform.API.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.Db\TravelAndAccommodationBookingPlatform.Db.csproj" />
