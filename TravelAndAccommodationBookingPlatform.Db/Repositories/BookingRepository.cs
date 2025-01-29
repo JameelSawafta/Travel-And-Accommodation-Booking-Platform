@@ -38,4 +38,23 @@ public class BookingRepository : IBookingRepository
 
         return hotels;
     }
+
+    public Task AddBookingAsync(Booking? booking)
+    {
+        _context.Bookings.Add(booking);
+        return _context.SaveChangesAsync();
+    }
+
+    public async Task<Booking?> GetBookingByIdAsync(Guid bookingId)
+    {
+        return await _context.Bookings
+            .Include(b => b.Payment)
+            .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+    }
+
+    public async Task UpdateBookingAsync(Booking booking)
+    {
+        _context.Bookings.Update(booking);
+        await _context.SaveChangesAsync();
+    }
 }
