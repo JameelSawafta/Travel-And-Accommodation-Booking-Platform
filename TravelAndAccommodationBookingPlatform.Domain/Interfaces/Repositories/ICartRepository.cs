@@ -9,4 +9,5 @@ public interface ICartRepository
     Task RemoveFromCartAsync(Guid cartId);
     Task ClearCartAsync(Guid userId);
     Task<bool> HasDateConflictAsync(Guid userId, Guid roomId, DateTime checkInDate, DateTime checkOutDate);
+    Task<IEnumerable<Cart>> GetCartItemsByUserIdAsync(Guid userId);
 }

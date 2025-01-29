@@ -60,5 +60,8 @@ public class CartRepository : ICartRepository
         );
     }
 
-
+    public async Task<IEnumerable<Cart>> GetCartItemsByUserIdAsync(Guid userId)
+    {
+        return await _context.Carts.Where(c => c.UserId == userId).ToListAsync();
+    }
 }
