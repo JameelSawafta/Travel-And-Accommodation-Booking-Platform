@@ -18,8 +18,9 @@ public class PaymentService : IPaymentService
     private readonly IPaymentRepository _paymentRepository;
     private readonly IPaymentGatewayService _paymentGatewayService;
     private readonly IMapper _mapper;
-    
-    public PaymentService(IBookingRepository bookingRepository, IPaymentRepository paymentRepository, IPaymentGatewayService paymentGatewayService, IMapper mapper)
+
+    public PaymentService(IBookingRepository bookingRepository, IPaymentRepository paymentRepository,
+        IPaymentGatewayService paymentGatewayService, IMapper mapper)
     {
         _bookingRepository = bookingRepository;
         _paymentRepository = paymentRepository;
@@ -46,7 +47,7 @@ public class PaymentService : IPaymentService
         booking.Payment.Status = PaymentStatus.Success;
         await _bookingRepository.UpdateBookingAsync(booking);
     }
-    
+
     public async Task CancelPaymentAsync(CancelPaymentRequestDto requestDto)
     {
         var booking = await _bookingRepository.GetBookingByIdAsync(requestDto.BookingId);
@@ -72,8 +73,9 @@ public class PaymentService : IPaymentService
         {
             throw new NotFoundException("Payment not found.");
         }
+
         var paymentDto = _mapper.Map<PaymentDto>(payment);
-        
+
         var pdfBytes = Document.Create(container =>
         {
             container.Page(page =>
@@ -84,8 +86,14 @@ public class PaymentService : IPaymentService
                 page.DefaultTextStyle(x => x.FontSize(12));
 
                 page.Header()
-                    .Text("Payment Receipt")
-                    .SemiBold().FontSize(18).AlignCenter();
+                    .Row(row =>
+                    {
+                        row.RelativeItem().AlignCenter().Column(column =>
+                        {
+                            column.Item().Text("Travel & Accommodation Booking Platform").Bold().FontSize(16);
+                            column.Item().Text("Payment Receipt").SemiBold().FontSize(14);
+                        });
+                    });
 
                 page.Content()
                     .PaddingVertical(1, Unit.Centimetre)
@@ -98,24 +106,45 @@ public class PaymentService : IPaymentService
                         column.Item().Text($"Transaction Date: {paymentDto.TransactionDate:dd/MM/yyyy HH:mm}");
                         column.Item().Text($"Status: {paymentDto.Status}");
 
-                        
-                        column.Item().Text("Booking Details:").Bold();
-                        foreach (var detail in paymentDto.Booking.BookingDetails)
+                        column.Item().PaddingTop(10).Text("Booking Details:").Bold();
+                        column.Item().Table(table =>
                         {
-                            column.Item().Text($"Room: {detail.Room.RoomNumber} - {detail.Room.RoomType}");
-                            column.Item().Text($"Check-In: {detail.CheckInDate:dd/MM/yyyy}");
-                            column.Item().Text($"Check-Out: {detail.CheckOutDate:dd/MM/yyyy}");
-                            column.Item().Text($"Price: {detail.Price:C}");
-                        }
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(); // Room Number
+                                columns.RelativeColumn(); // Room Type
+                                columns.RelativeColumn(); // Check-In Date
+                                columns.RelativeColumn(); // Check-Out Date
+                                columns.RelativeColumn(); // Price
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().Background(Colors.Grey.Lighten2).Padding(5).Text("Room Number").Bold();
+                                header.Cell().Background(Colors.Grey.Lighten2).Padding(5).Text("Room Type").Bold();
+                                header.Cell().Background(Colors.Grey.Lighten2).Padding(5).Text("Check-In Date").Bold();
+                                header.Cell().Background(Colors.Grey.Lighten2).Padding(5).Text("Check-Out Date").Bold();
+                                header.Cell().Background(Colors.Grey.Lighten2).Padding(5).Text("Price").Bold();
+                            });
+
+                            foreach (var detail in paymentDto.Booking.BookingDetails)
+                            {
+                                table.Cell().Background(Colors.Grey.Lighten4).Padding(5).Text(detail.Room.RoomNumber);
+                                table.Cell().Background(Colors.Grey.Lighten4).Padding(5).Text(detail.Room.RoomType);
+                                table.Cell().Background(Colors.Grey.Lighten4).Padding(5)
+                                    .Text(detail.CheckInDate.ToString("dd/MM/yyyy"));
+                                table.Cell().Background(Colors.Grey.Lighten4).Padding(5)
+                                    .Text(detail.CheckOutDate.ToString("dd/MM/yyyy"));
+                                table.Cell().Background(Colors.Grey.Lighten4).Padding(5).Text($"{detail.Price:C}");
+                            }
+                        });
+                        
                     });
 
                 page.Footer()
                     .AlignCenter()
-                    .Text(x =>
-                    {
-                        x.Span("Page ");
-                        x.CurrentPageNumber();
-                    });
+                    .Text("Thank you for choosing our platform! Contact us at support@TABP.com for any queries.")
+                    .FontSize(10);
             });
         }).GeneratePdf();
 

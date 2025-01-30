@@ -10,5 +10,6 @@ public class PaymentProfile : Profile
     {
         CreateMap<Payment, PaymentDto>()
             .ForMember(dest => dest.Booking, opt => opt.MapFrom(src => src.Booking));
+            .ForMember(dest => dest.TransactionDate, opt => opt.MapFrom(src => src.TransactionDate.ToLocalTime()));
     }
 }
