@@ -72,7 +72,7 @@ public class BookingService : IBookingService
             totalAmount += cartItem.Price;
         }
         
-        var (approvalUrl,transactionId) = await _paymentGatewayService.CreatePaymentAsync(totalAmount, "USD");
+        var (approvalUrl,transactionId, paymentMethod) = await _paymentGatewayService.CreatePaymentAsync(totalAmount, "USD");
         
         var booking = new Booking
         {
@@ -89,7 +89,7 @@ public class BookingService : IBookingService
             {
                 TransactionID = transactionId,
                 Amount = totalAmount,
-                PaymentMethod = PaymentMethod.PayPal,
+                PaymentMethod = paymentMethod,
                 Status = PaymentStatus.Pending
             }
         };
@@ -100,7 +100,7 @@ public class BookingService : IBookingService
         return new CheckoutDto
         {
             approvalUrl = approvalUrl,
-            BookingId = booking.BookingId.ToString()
+            PaymentId = booking.Payment.PaymentId
         };
     }
 }

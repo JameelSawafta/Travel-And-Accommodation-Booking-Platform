@@ -7,7 +7,7 @@ public class CheckoutDto
     /// </summary>
     public string approvalUrl { get; set; }
     /// <summary>
-    /// the booking id
+    /// the Payment id for the payment
     /// </summary>
-    public string BookingId { get; set; }
+    public Guid PaymentId { get; set; }
 }
