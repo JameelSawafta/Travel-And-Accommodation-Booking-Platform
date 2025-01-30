@@ -59,9 +59,9 @@ public class PaymentsController : Controller
     /// <response code="401">if the user is not authenticated</response>
     /// <response code="404">if the payment id is not valid</response>
     [HttpGet("{paymentId}/pdf")]
-    public async Task<IActionResult> DownloadPaymentPdf(Guid paymentId)
+    public async Task<FileContentResult> DownloadPaymentPdf(Guid paymentId)
     {
-        var pdfBytes = await _paymentService.GeneratePaymentPdfAsync(paymentId);
+        var pdfBytes = await _paymentService.GeneratePaymentInvoiceAsync(paymentId);
         return File(pdfBytes, "application/pdf", $"Payment_{paymentId}.pdf");
     }
 }

@@ -1,6 +1,7 @@
 using System.Text;
 using Asp.Versioning;
 using DotNetEnv;
+using InvoiceGenerator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -153,6 +154,8 @@ public class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<IPaymentGatewayService, PayPalGatewayService>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
+        
+        builder.Services.AddScoped<IInvoiceService, InvoicePDFService>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         

@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\InvoiceGenerator\InvoiceGenerator.csproj" />
       <ProjectReference Include="..\PasswordHashing\PasswordHashing.csproj" />
       <ProjectReference Include="..\PaymentGateway\PaymentGateway.csproj" />
       <ProjectReference Include="..\TokenGenerator\TokenGenerator.csproj" />
