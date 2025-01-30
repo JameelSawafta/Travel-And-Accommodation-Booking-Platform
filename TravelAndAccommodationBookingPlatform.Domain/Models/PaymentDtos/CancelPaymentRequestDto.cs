@@ -3,7 +3,7 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Models.PaymentDtos;
 public class CancelPaymentRequestDto
 {
     /// <summary>
-    /// the booking id
+    /// the payment id
     /// </summary>
-    public Guid BookingId { get; set; }
+    public Guid PaymentId { get; set; }
 }
