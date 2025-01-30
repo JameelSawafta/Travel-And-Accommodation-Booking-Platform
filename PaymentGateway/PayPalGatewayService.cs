@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using PayPal.Api;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 
 namespace PaymentGateway;
@@ -16,7 +17,7 @@ public class PayPalGatewayService : IPaymentGatewayService
         _configuration = configuration;
     }
     
-    public async Task<(string approvalUrl, string transactionId)> CreatePaymentAsync(decimal amount, string currency)
+    public async Task<(string approvalUrl, string transactionId, PaymentMethod paymentMethod)> CreatePaymentAsync(decimal amount, string currency)
     {
         var returnUrl = _configuration["PayPal:ReturnUrl"];
         var cancelUrl = _configuration["PayPal:CancelUrl"];
@@ -45,7 +46,7 @@ public class PayPalGatewayService : IPaymentGatewayService
         
         var createdPayment = await Task.Run(() => payment.Create(_apiContext));
         var approvalUrl = createdPayment.links.FirstOrDefault(link => link.rel == "approval_url")?.href;
-        return (approvalUrl, createdPayment.id);
+        return (approvalUrl, createdPayment.id, PaymentMethod.PayPal);
     }
 
     public async Task ExecutePaymentAsync(string paymentId, string payerId)
