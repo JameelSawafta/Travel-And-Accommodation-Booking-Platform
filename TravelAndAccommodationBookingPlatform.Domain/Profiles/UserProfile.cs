@@ -12,5 +12,6 @@ public class UserProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.Ignore()) 
             .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()) 
             .ForMember(dest => dest.Salt, opt => opt.Ignore());
+        CreateMap<User, UserDto>();
     }
 }
