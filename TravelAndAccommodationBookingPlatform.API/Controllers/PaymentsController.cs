@@ -48,4 +48,19 @@ public class PaymentsController : Controller
         await _paymentService.CancelPaymentAsync(requestDto);
         return Ok("Payment cancelled.");
     }
+    
+    /// <summary>
+    /// Get all payments
+    /// </summary>
+    /// <param name="paymentId"> the payment id </param>
+    /// <returns> pdf file of the payment </returns>
+    /// <response code="200">if the payment pdf is generated</response>
+    /// <response code="401">if the user is not authenticated</response>
+    /// <response code="404">if the payment id is not valid</response>
+    [HttpGet("{paymentId}/pdf")]
+    public async Task<IActionResult> DownloadPaymentPdf(Guid paymentId)
+    {
+        var pdfBytes = await _paymentService.GeneratePaymentPdfAsync(paymentId);
+        return File(pdfBytes, "application/pdf", $"Payment_{paymentId}.pdf");
+    }
 }
