@@ -1,21 +1,34 @@
+using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 
 namespace TravelAndAccommodationBookingPlatform.Db.Repositories;
 
 public class PaymentRepository : IPaymentRepository
 {
-    private readonly TravelAndAccommodationBookingPlatformDbContext _dbContext;
+    private readonly TravelAndAccommodationBookingPlatformDbContext _context;
     
-    public PaymentRepository(TravelAndAccommodationBookingPlatformDbContext dbContext)
+    public PaymentRepository(TravelAndAccommodationBookingPlatformDbContext context)
     {
-        _dbContext = dbContext;
+        _context = context;
     }
     
     public async Task CreatePaymentAsync(Payment payment)
     {
-        await _dbContext.Payments.AddAsync(payment);
-        await _dbContext.SaveChangesAsync();
+        await _context.Payments.AddAsync(payment);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Payment?> GetPaymentByIdAsync(Guid paymentId)
+    {
+        return await _context.Payments
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.User)
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.BookingDetails)
+            .ThenInclude(bd => bd.Room)
+            .FirstOrDefaultAsync(p => p.PaymentId == paymentId && p.Status == PaymentStatus.Success);
     }
 }
