@@ -30,14 +30,14 @@ public class BookingServiceIntegrationTests : IDisposable
             .Options;
         _dbContext = new TravelAndAccommodationBookingPlatformDbContext(_dbOptions);
         
-        var bookingRepository = new BookingRepository(_dbContext, new PaginationService());
+        var bookingRepository = new BookingRepository(_dbContext);
         var cartRepository = new CartRepository(_dbContext , new PaginationService());
         var userRepository = new UserRepository(_dbContext);
         var roomRepository = new RoomRepository(_dbContext , new PaginationService());
         var mockPaymentGatewayService = new Mock<IPaymentGatewayService>();
         mockPaymentGatewayService
             .Setup(service => service.CreatePaymentAsync(It.IsAny<decimal>(), It.IsAny<string>()))
-            .ReturnsAsync(("https://paypal.com/approval-url", Guid.NewGuid().ToString()));
+            .ReturnsAsync(("https://paypal.com/approval-url", Guid.NewGuid().ToString(), PaymentMethod.PayPal));
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
@@ -187,6 +187,6 @@ public class BookingServiceIntegrationTests : IDisposable
 
         Assert.NotNull(result);
         Assert.False(string.IsNullOrEmpty(result.approvalUrl));
-        Assert.False(string.IsNullOrEmpty(result.BookingId));
+        Assert.NotEqual(Guid.Empty, result.PaymentId);
     }
 }

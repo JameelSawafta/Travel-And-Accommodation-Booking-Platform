@@ -1,6 +1,7 @@
 using AutoMapper;
 using Moq;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
@@ -120,7 +121,7 @@ public class BookingServiceTests
         _mockRoomRepository.Setup(repo => repo.GetRoomIfAvailableAsync(It.IsAny<Guid>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(new Room());
         _mockPaymentGatewayService.Setup(service => service.CreatePaymentAsync(It.IsAny<decimal>(), "USD"))
-            .ReturnsAsync(("https://payment-approval-url", "transaction-123"));
+            .ReturnsAsync(("https://payment-approval-url", "transaction-123", PaymentMethod.PayPal));
 
         var result = await _bookingService.CreateBookingFromCartAsync(requestDto);
 
