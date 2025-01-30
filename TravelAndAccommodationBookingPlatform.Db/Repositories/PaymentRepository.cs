@@ -21,7 +21,7 @@ public class PaymentRepository : IPaymentRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Payment?> GetPaymentByIdAsync(Guid paymentId)
+    public async Task<Payment?> GetSuccessPaymentWithBookingDetailsByIdAsync(Guid paymentId)
     {
         return await _context.Payments
             .Include(p => p.Booking)
@@ -30,5 +30,18 @@ public class PaymentRepository : IPaymentRepository
             .ThenInclude(b => b.BookingDetails)
             .ThenInclude(bd => bd.Room)
             .FirstOrDefaultAsync(p => p.PaymentId == paymentId && p.Status == PaymentStatus.Success);
+    }
+
+    public async Task<Payment?> GetPaymentWithBookingByIdAsync(Guid paymentId)
+    {
+        return await _context.Payments
+            .Include(p => p.Booking)
+            .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
+    }
+
+    public async Task UpdatePaymentAsync(Payment payment)
+    {
+        _context.Payments.Update(payment);
+        await _context.SaveChangesAsync();
     }
 }
