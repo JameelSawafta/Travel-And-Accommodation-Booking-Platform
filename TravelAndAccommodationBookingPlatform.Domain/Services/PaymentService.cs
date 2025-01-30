@@ -14,61 +14,61 @@ namespace TravelAndAccommodationBookingPlatform.Domain.Services;
 
 public class PaymentService : IPaymentService
 {
-    private readonly IBookingRepository _bookingRepository;
     private readonly IPaymentRepository _paymentRepository;
     private readonly IPaymentGatewayService _paymentGatewayService;
     private readonly IMapper _mapper;
 
-    public PaymentService(IBookingRepository bookingRepository, IPaymentRepository paymentRepository,
+    public PaymentService(IPaymentRepository paymentRepository,
         IPaymentGatewayService paymentGatewayService, IMapper mapper)
     {
-        _bookingRepository = bookingRepository;
         _paymentRepository = paymentRepository;
         _paymentGatewayService = paymentGatewayService;
         _mapper = mapper;
     }
-    
-    public async Task ConfirmPaymentAsync(ConfirmPaymentRequestDto requestDto)
+
+    public async Task<PaymentResponsetDto> ConfirmPaymentAsync(ConfirmPaymentRequestDto requestDto)
     {
-        var booking = await _bookingRepository.GetBookingByIdAsync(requestDto.BookingId);
-        if (booking == null)
+        var payment = await _paymentRepository.GetPaymentWithBookingByIdAsync(requestDto.PaymentId);
+        if (payment == null)
         {
-            throw new NotFoundException("Booking not found.");
+            throw new NotFoundException("Payment not found.");
         }
 
-        if (booking.Payment.Status == PaymentStatus.Success)
+        if (payment.Status == PaymentStatus.Success)
         {
             throw new ConflictException("Payment already confirmed.");
         }
 
-        await _paymentGatewayService.ExecutePaymentAsync(requestDto.PaymentId, requestDto.PayerId);
+        await _paymentGatewayService.ExecutePaymentAsync(payment.TransactionID, requestDto.PayerId);
 
-        booking.Status = BookingStatus.Confirmed;
-        booking.Payment.Status = PaymentStatus.Success;
-        await _bookingRepository.UpdateBookingAsync(booking);
+        payment.Booking.Status = BookingStatus.Confirmed;
+        payment.Status = PaymentStatus.Success;
+        await _paymentRepository.UpdatePaymentAsync(payment);
+        
+        return _mapper.Map<PaymentResponsetDto>(payment);
     }
 
     public async Task CancelPaymentAsync(CancelPaymentRequestDto requestDto)
     {
-        var booking = await _bookingRepository.GetBookingByIdAsync(requestDto.BookingId);
-        if (booking == null)
+        var payment = await _paymentRepository.GetPaymentWithBookingByIdAsync(requestDto.PaymentId);
+        if (payment == null)
         {
-            throw new NotFoundException("Booking not found.");
+            throw new NotFoundException("Payment not found.");
+        }
+        
+        if (payment.Status == PaymentStatus.Failed)
+        {
+            throw new ConflictException("Payment already cancelled.");
         }
 
-        if (booking.Status == BookingStatus.Cancelled)
-        {
-            throw new ConflictException("Booking already cancelled.");
-        }
-
-        booking.Status = BookingStatus.Cancelled;
-        booking.Payment.Status = PaymentStatus.Failed;
-        await _bookingRepository.UpdateBookingAsync(booking);
+        payment.Booking.Status = BookingStatus.Cancelled;
+        payment.Status = PaymentStatus.Failed;
+        await _paymentRepository.UpdatePaymentAsync(payment);
     }
 
     public async Task<byte[]> GeneratePaymentPdfAsync(Guid paymentId)
     {
-        var payment = await _paymentRepository.GetPaymentByIdAsync(paymentId);
+        var payment = await _paymentRepository.GetSuccessPaymentWithBookingDetailsByIdAsync(paymentId);
         if (payment == null)
         {
             throw new NotFoundException("Payment not found.");

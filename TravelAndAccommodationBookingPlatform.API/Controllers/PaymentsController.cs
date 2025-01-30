@@ -23,15 +23,16 @@ public class PaymentsController : Controller
     /// Confirm the payment
     /// </summary>
     /// <param name="ConfirmPaymentRequestDto"> the payment confirmation request </param>
+    /// <returns> the payment response </returns>
     /// <response code="200">if the payment is confirmed</response>
     /// <response code="401">if the user is not authenticated</response>
     /// <response code="404">if the booking id is not valid</response>
     /// <response code="409">if the payment is already confirmed</response>
     [HttpPost("confirm")]
-    public async Task<IActionResult> ConfirmPaymentAsync([FromBody] ConfirmPaymentRequestDto requestDto)
+    public async Task<PaymentResponsetDto> ConfirmPaymentAsync([FromBody] ConfirmPaymentRequestDto requestDto)
     {
-        await _paymentService.ConfirmPaymentAsync(requestDto);
-        return Ok("Payment confirmed.");
+        var paymentResponse = await _paymentService.ConfirmPaymentAsync(requestDto);
+        return paymentResponse;
     }
     
     /// <summary>
