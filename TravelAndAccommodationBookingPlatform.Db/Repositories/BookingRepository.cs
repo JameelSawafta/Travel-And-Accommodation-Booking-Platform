@@ -10,12 +10,10 @@ namespace TravelAndAccommodationBookingPlatform.Db.Repositories;
 public class BookingRepository : IBookingRepository
 {
     private readonly TravelAndAccommodationBookingPlatformDbContext _context;
-    private readonly IPaginationService _paginationService;
 
-    public BookingRepository(TravelAndAccommodationBookingPlatformDbContext context, IPaginationService paginationService)
+    public BookingRepository(TravelAndAccommodationBookingPlatformDbContext context)
     {
         _context = context;
-        _paginationService = paginationService;
     }
     
     public async Task<List<Hotel>> GetRecentlyVisitedHotelsAsync(Guid userId, int count)
