@@ -120,6 +120,7 @@ public class Program
         );
         
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddHttpClient();
         
         builder.Services.AddSingleton<APIContext>(provider =>
         {
