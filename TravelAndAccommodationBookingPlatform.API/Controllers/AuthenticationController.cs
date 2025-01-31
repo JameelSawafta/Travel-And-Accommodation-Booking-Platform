@@ -1,6 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
+using TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.AuthValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.UserDtos;

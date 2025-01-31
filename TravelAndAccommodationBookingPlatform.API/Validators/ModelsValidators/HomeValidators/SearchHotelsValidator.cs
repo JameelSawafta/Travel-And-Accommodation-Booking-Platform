@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.HomeValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.HomeValidators;
 
 
 public class SearchHotelsValidator : GenericValidator<SearchRequestDto>

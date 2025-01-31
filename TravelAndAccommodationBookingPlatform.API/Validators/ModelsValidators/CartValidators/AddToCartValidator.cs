@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CartDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.CartValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.CartValidators;
 
 public class AddToCartValidator : GenericValidator<AddToCartDto>
 {

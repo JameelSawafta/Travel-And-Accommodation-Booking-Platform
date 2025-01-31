@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.BookingValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.BookingValidators;
 
 public class CheckoutValidator : GenericValidator<CheckoutRequestDto>
 {

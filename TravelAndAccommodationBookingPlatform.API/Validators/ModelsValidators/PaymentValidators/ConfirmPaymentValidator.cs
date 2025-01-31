@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.PaymentDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.PaymentValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.PaymentValidators;
 
 public class ConfirmPaymentValidator : GenericValidator<ConfirmPaymentRequestDto>
 {

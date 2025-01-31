@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelAndAccommodationBookingPlatform.API.Validators.CartValidators;
+using TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.CartValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CartDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.Common;

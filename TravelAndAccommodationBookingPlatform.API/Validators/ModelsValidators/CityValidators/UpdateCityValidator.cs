@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.CityValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.CityValidators;
 
 public class UpdateCityValidator : GenericValidator<UpdateCityDto>
 {

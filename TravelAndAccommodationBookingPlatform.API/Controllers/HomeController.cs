@@ -1,7 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TravelAndAccommodationBookingPlatform.API.Validators.HomeValidators;
+using TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.HomeValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CityDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.Common;

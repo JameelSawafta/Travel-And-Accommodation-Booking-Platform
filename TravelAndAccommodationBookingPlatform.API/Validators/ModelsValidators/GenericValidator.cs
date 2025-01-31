@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators;
 
 public class GenericValidator<T> : AbstractValidator<T>
 {

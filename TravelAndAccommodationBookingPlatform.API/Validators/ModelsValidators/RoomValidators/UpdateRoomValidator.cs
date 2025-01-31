@@ -1,11 +1,11 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.RoomDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.RoomValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.RoomValidators;
 
-public class CreateRoomValidator : GenericValidator<CreateRoomDto>
+public class UpdateRoomValidator: GenericValidator<UpdateRoomDto>
 {
-    public CreateRoomValidator()
+    public UpdateRoomValidator()
     {
         RuleFor(x => x.HotelId)
             .NotEmpty().WithMessage("HotelId is required");
@@ -26,4 +26,5 @@ public class CreateRoomValidator : GenericValidator<CreateRoomDto>
         RuleFor(x => x.Availability)
             .NotEmpty().WithMessage("Availability is required");
     }
+    
 }

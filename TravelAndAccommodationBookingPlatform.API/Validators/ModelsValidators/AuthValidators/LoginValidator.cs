@@ -1,7 +1,7 @@
 using FluentValidation;
 using TravelAndAccommodationBookingPlatform.Domain.Models.UserDtos;
 
-namespace TravelAndAccommodationBookingPlatform.API.Validators.AuthValidators;
+namespace TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.AuthValidators;
 
 public class LoginValidator : GenericValidator<LoginDto>
 {
