@@ -14,14 +14,8 @@ public class PaymentRepository : IPaymentRepository
     {
         _context = context;
     }
-    
-    public async Task CreatePaymentAsync(Payment payment)
-    {
-        await _context.Payments.AddAsync(payment);
-        await _context.SaveChangesAsync();
-    }
 
-    public async Task<Payment?> GetSuccessPaymentWithBookingDetailsByIdAsync(Guid paymentId)
+    public async Task<Payment?> GetPaymentWithBookingDetailsByIdAsync(Guid paymentId)
     {
         return await _context.Payments
             .Include(p => p.Booking)
@@ -29,7 +23,7 @@ public class PaymentRepository : IPaymentRepository
             .Include(p => p.Booking)
             .ThenInclude(b => b.BookingDetails)
             .ThenInclude(bd => bd.Room)
-            .FirstOrDefaultAsync(p => p.PaymentId == paymentId && p.Status == PaymentStatus.Success);
+            .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
     }
 
     public async Task<Payment?> GetPaymentWithBookingByIdAsync(Guid paymentId)

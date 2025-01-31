@@ -27,6 +27,17 @@ public class PaymentService : IPaymentService
         _mapper = mapper;
     }
 
+    public async Task<PaymentDto> GetPaymentWithBookingDetailsByIdAsync(Guid paymentId)
+    {
+        var payment = await _paymentRepository.GetPaymentWithBookingDetailsByIdAsync(paymentId);
+        if (payment == null)
+        {
+            throw new NotFoundException("Payment not found.");
+        }
+
+        return _mapper.Map<PaymentDto>(payment);
+    }
+
     public async Task<PaymentResponsetDto> ConfirmPaymentAsync(ConfirmPaymentRequestDto requestDto)
     {
         var payment = await _paymentRepository.GetPaymentWithBookingByIdAsync(requestDto.PaymentId);
@@ -71,10 +82,15 @@ public class PaymentService : IPaymentService
 
     public async Task<byte[]> GeneratePaymentInvoiceAsync(Guid paymentId)
     {
-        var payment = await _paymentRepository.GetSuccessPaymentWithBookingDetailsByIdAsync(paymentId);
+        var payment = await _paymentRepository.GetPaymentWithBookingDetailsByIdAsync(paymentId);
         if (payment == null)
         {
             throw new NotFoundException("Payment not found.");
+        }
+
+        if (payment.Status != PaymentStatus.Success)
+        {
+            throw new ConflictException("Payment not confirmed.");
         }
 
         var paymentDto = _mapper.Map<PaymentDto>(payment);

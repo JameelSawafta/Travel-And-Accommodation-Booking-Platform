@@ -226,7 +226,7 @@ public class PaymentServiceTests
         var paymentDto = new PaymentDto();
         var pdfBytes = new byte[] { 0x01, 0x02, 0x03 };
 
-        _mockPaymentRepository.Setup(repo => repo.GetSuccessPaymentWithBookingDetailsByIdAsync(paymentId))
+        _mockPaymentRepository.Setup(repo => repo.GetPaymentWithBookingDetailsByIdAsync(paymentId))
             .ReturnsAsync(payment);
         _mockMapper.Setup(mapper => mapper.Map<PaymentDto>(payment))
             .Returns(paymentDto);
@@ -246,7 +246,7 @@ public class PaymentServiceTests
     {
         
         var paymentId = Guid.NewGuid();
-        _mockPaymentRepository.Setup(repo => repo.GetSuccessPaymentWithBookingDetailsByIdAsync(paymentId))
+        _mockPaymentRepository.Setup(repo => repo.GetPaymentWithBookingDetailsByIdAsync(paymentId))
             .ReturnsAsync((Payment)null);
 
         

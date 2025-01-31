@@ -20,6 +20,20 @@ public class PaymentsController : Controller
     }
     
     /// <summary>
+    /// Get the payment with booking details
+    /// </summary>
+    /// <param name="paymentId"></param>
+    /// <returns> the payment with booking details </returns>
+    /// <response code="200">if the payment is found</response>
+    /// <response code="401">if the user is not authenticated</response>
+    /// <response code="404">if the payment id is not found</response>
+    [HttpGet("{paymentId}")]
+    public async Task<PaymentDto> GetPaymentWithBookingDetailsAsync(Guid paymentId)
+    {
+        return await _paymentService.GetPaymentWithBookingDetailsByIdAsync(paymentId);
+    }
+    
+    /// <summary>
     /// Confirm the payment
     /// </summary>
     /// <param name="ConfirmPaymentRequestDto"> the payment confirmation request </param>
@@ -31,8 +45,7 @@ public class PaymentsController : Controller
     [HttpPost("confirm")]
     public async Task<PaymentResponsetDto> ConfirmPaymentAsync([FromBody] ConfirmPaymentRequestDto requestDto)
     {
-        var paymentResponse = await _paymentService.ConfirmPaymentAsync(requestDto);
-        return paymentResponse;
+        return await _paymentService.ConfirmPaymentAsync(requestDto);
     }
     
     /// <summary>
