@@ -41,7 +41,7 @@ public class AuthService : IAuthService
                 throw new AuthenticationFailedException("Invalid credentials");
             }
 
-            var token = _jwtGeneratorService.GenerateToken(user.UserId, user.Username, user.Role);
+            var token = await _jwtGeneratorService.GenerateTokenAsync(user.UserId, user.Username, user.Role);
 
             return token;
         }

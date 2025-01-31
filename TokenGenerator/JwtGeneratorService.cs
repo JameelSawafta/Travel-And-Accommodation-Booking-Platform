@@ -11,21 +11,22 @@ namespace TokenGenerator;
 
 public class JwtGeneratorService : ITokenGeneratorService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
+    private readonly HttpClient _httpClient;
 
-    public JwtGeneratorService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+    public JwtGeneratorService(IConfiguration configuration, HttpClient httpClient)
     {
         _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
+        _httpClient = httpClient;
     }
 
-    public string GenerateToken(Guid userId, string username, UserRole role)
+    public async Task<string> GenerateTokenAsync(Guid userId, string username, UserRole role)
     {
+        var clientIp = await GetRouterPublicIpAsync();
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretForKey"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var clientIp = _httpContextAccessor?.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown";        
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
@@ -44,5 +45,19 @@ public class JwtGeneratorService : ITokenGeneratorService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private async Task<string> GetRouterPublicIpAsync()
+    {
+        try
+        {
+            string apiUrl = _configuration["Authentication:PublicIpApiUrl"];
+            var response = await _httpClient.GetStringAsync(apiUrl);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return "Unknown";
+        }
     }
 }

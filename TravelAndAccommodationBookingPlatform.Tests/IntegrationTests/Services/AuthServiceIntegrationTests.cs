@@ -47,7 +47,7 @@ public class AuthServiceIntegrationTests
         var userRepository = new UserRepository(dbContext);
 
         var passwordService = new Argon2PasswordService(_configuration); 
-        var tokenGeneratorService = new JwtGeneratorService(_configuration, new HttpContextAccessor()); 
+        var tokenGeneratorService = new JwtGeneratorService(_configuration, new HttpClient()); 
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
