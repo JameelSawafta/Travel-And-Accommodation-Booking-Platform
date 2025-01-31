@@ -57,7 +57,7 @@ public class PaymentsController : Controller
     /// <response code="404">if the booking id is not valid</response>
     /// <response code="409">if the payment is already cancelled</response>
     [HttpPost("cancel")]
-    public async Task<IActionResult> CancelBookingAsync([FromBody] CancelPaymentRequestDto requestDto)
+    public async Task<IActionResult> CancelPaymentAsync([FromBody] CancelPaymentRequestDto requestDto)
     {
         await _paymentService.CancelPaymentAsync(requestDto);
         return Ok("Payment cancelled.");
