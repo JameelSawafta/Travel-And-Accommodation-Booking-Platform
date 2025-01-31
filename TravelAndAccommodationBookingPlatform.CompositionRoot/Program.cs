@@ -170,8 +170,6 @@ public class Program
         
         var app = builder.Build();
         
-        app.UseMiddleware<CustomExceptionHandlingMiddleware>();
-        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -183,7 +181,9 @@ public class Program
         app.UseRouting();
         
         app.UseAuthentication();
+        app.UseMiddleware<TokenIpValidationMiddleware>();
         app.UseAuthorization();
+        app.UseMiddleware<CustomExceptionHandlingMiddleware>();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
