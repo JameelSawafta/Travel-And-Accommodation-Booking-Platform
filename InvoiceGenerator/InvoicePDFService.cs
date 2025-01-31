@@ -36,10 +36,14 @@ public class InvoicePDFService : IInvoiceService
                     .PaddingVertical(1, Unit.Centimetre)
                     .Column(column =>
                     {
-                        column.Item().Text($"Payment ID: {paymentDto.PaymentId}");
+                        column.Item().Text("Customer Details:").Bold();
+                        column.Item().Text($"Name: {paymentDto.Booking.User.FirstName} {paymentDto.Booking.User.LastName}");
+                        column.Item().Text($"Email: {paymentDto.Booking.User.Email}");
+                        
+                        column.Item().PaddingTop(10).Text("Payment Details:").Bold();
+                        column.Item().Text($"Transaction ID: {paymentDto.TransactionID}");
                         column.Item().Text($"Amount: {paymentDto.Amount:C}");
                         column.Item().Text($"Payment Method: {paymentDto.PaymentMethod}");
-                        column.Item().Text($"Transaction ID: {paymentDto.TransactionID}");
                         column.Item().Text($"Transaction Date: {paymentDto.TransactionDate:dd/MM/yyyy HH:mm}");
                         column.Item().Text($"Status: {paymentDto.Status}");
 
