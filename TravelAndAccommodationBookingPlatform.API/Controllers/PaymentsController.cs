@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.PaymentValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.PaymentDtos;
 
@@ -45,6 +46,8 @@ public class PaymentsController : Controller
     [HttpPost("confirm")]
     public async Task<PaymentResponsetDto> ConfirmPaymentAsync([FromBody] ConfirmPaymentRequestDto requestDto)
     {
+        var validator = new ConfirmPaymentValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(requestDto);
         return await _paymentService.ConfirmPaymentAsync(requestDto);
     }
     
@@ -59,6 +62,8 @@ public class PaymentsController : Controller
     [HttpPost("cancel")]
     public async Task<IActionResult> CancelPaymentAsync([FromBody] CancelPaymentRequestDto requestDto)
     {
+        var validator = new CancelPaymentValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(requestDto);
         await _paymentService.CancelPaymentAsync(requestDto);
         return Ok("Payment cancelled.");
     }

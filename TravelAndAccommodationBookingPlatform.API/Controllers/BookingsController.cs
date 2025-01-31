@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.BookingValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models;
 
@@ -31,7 +32,8 @@ public class BookingsController : Controller
     [HttpPost("checkout")]
     public async Task<CheckoutDto> CheckoutAsync([FromBody] CheckoutRequestDto requestDto)
     {
-        var checkoutDto = await _bookingService.CreateBookingFromCartAsync(requestDto);
-        return checkoutDto;
+        var validator = new CheckoutValidator();
+        await validator.ValidateAndThrowCustomExceptionAsync(requestDto);
+        return await _bookingService.CreateBookingFromCartAsync(requestDto);
     }
 }
