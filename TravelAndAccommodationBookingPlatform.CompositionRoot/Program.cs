@@ -1,13 +1,18 @@
 using System.Text;
 using Asp.Versioning;
-using FluentValidation.AspNetCore;
+using DotNetEnv;
+using InvoiceGenerator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PasswordHashing;
+using PaymentGateway;
+using PayPal.Api;
+using QuestPDF.Infrastructure;
 using TokenGenerator;
 using TravelAndAccommodationBookingPlatform.API.Controllers;
 using TravelAndAccommodationBookingPlatform.API.Middlewares;
@@ -17,7 +22,6 @@ using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
-using TravelAndAccommodationBookingPlatform.Domain.Models.SearchDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
 namespace TravelAndAccommodationBookingPlatform.CompositionRoot;
@@ -26,7 +30,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Env.Load();
+        
         var builder = WebApplication.CreateBuilder(args);
+        
+        QuestPDF.Settings.License = LicenseType.Community;
         
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -113,9 +121,23 @@ public class Program
         
         builder.Services.AddHttpContextAccessor();
         
+        builder.Services.AddSingleton<APIContext>(provider =>
+        {
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var config = new Dictionary<string, string>
+            {
+                { "clientId", Environment.GetEnvironmentVariable("PAYPAL_CLIENT_ID") },
+                { "clientSecret", Environment.GetEnvironmentVariable("PAYPAL_CLIENT_SECRET") },
+                { "mode", configuration["paypal:Mode"] }
+            };
+        
+            var accessToken = new OAuthTokenCredential(config).GetAccessToken();
+            return new APIContext(accessToken) { Config = config };
+        });
+        
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddTransient<ITokenGeneratorService, JwtGeneratorService>();
-        builder.Services.AddTransient<IPasswordService, Argon2PasswordService>();
+        builder.Services.AddScoped<ITokenGeneratorService, JwtGeneratorService>();
+        builder.Services.AddScoped<IPasswordService, Argon2PasswordService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IHotelRepository, HotelRepository>();
         builder.Services.AddScoped<IHotelService, HotelService>();
@@ -126,6 +148,17 @@ public class Program
         builder.Services.AddScoped<IRoomRepository, RoomRepository>();
         builder.Services.AddScoped<IRoomService, RoomService>();
         builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+        builder.Services.AddScoped<ICartRepository, CartRepository>();
+        builder.Services.AddScoped<ICartService, CartService>();
+        
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+        builder.Services.AddScoped<IPaymentGatewayService, PayPalGatewayService>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
+        
+        builder.Services.AddScoped<IUserService, UserService>();
+        
+        builder.Services.AddScoped<IInvoiceService, InvoicePDFService>();
+        builder.Services.AddScoped<IEmailService, EmailService.PaymentSuccessfulEmailService>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         

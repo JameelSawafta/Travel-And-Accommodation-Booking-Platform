@@ -8,7 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EmailService\EmailService.csproj" />
+      <ProjectReference Include="..\InvoiceGenerator\InvoiceGenerator.csproj" />
       <ProjectReference Include="..\PasswordHashing\PasswordHashing.csproj" />
+      <ProjectReference Include="..\PaymentGateway\PaymentGateway.csproj" />
       <ProjectReference Include="..\TokenGenerator\TokenGenerator.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.API\TravelAndAccommodationBookingPlatform.API.csproj" />
       <ProjectReference Include="..\TravelAndAccommodationBookingPlatform.Db\TravelAndAccommodationBookingPlatform.Db.csproj" />
@@ -16,10 +19,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="DotNetEnv" Version="3.1.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update=".env">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

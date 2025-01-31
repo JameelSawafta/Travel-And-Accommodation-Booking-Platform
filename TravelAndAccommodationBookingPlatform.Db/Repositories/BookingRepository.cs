@@ -10,12 +10,10 @@ namespace TravelAndAccommodationBookingPlatform.Db.Repositories;
 public class BookingRepository : IBookingRepository
 {
     private readonly TravelAndAccommodationBookingPlatformDbContext _context;
-    private readonly IPaginationService _paginationService;
 
-    public BookingRepository(TravelAndAccommodationBookingPlatformDbContext context, IPaginationService paginationService)
+    public BookingRepository(TravelAndAccommodationBookingPlatformDbContext context)
     {
         _context = context;
-        _paginationService = paginationService;
     }
     
     public async Task<List<Hotel>> GetRecentlyVisitedHotelsAsync(Guid userId, int count)
@@ -37,5 +35,24 @@ public class BookingRepository : IBookingRepository
             .ToListAsync();
 
         return hotels;
+    }
+
+    public Task AddBookingAsync(Booking? booking)
+    {
+        _context.Bookings.Add(booking);
+        return _context.SaveChangesAsync();
+    }
+
+    public async Task<Booking?> GetBookingByIdAsync(Guid bookingId)
+    {
+        return await _context.Bookings
+            .Include(b => b.Payment)
+            .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+    }
+
+    public async Task UpdateBookingAsync(Booking booking)
+    {
+        _context.Bookings.Update(booking);
+        await _context.SaveChangesAsync();
     }
 }

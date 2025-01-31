@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
+using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 
@@ -24,12 +25,12 @@ public class RoomRepository : IRoomRepository
         return (paginatedRooms, totalCount);
     }
 
-    public async Task<Room> GetRoomByIdAsync(Guid roomId)
+    public async Task<Room?> GetRoomByIdAsync(Guid roomId)
     {
         return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomId == roomId);
     }
     
-    public async Task<Room> GetRoomByHotelAndNumberAsync(Guid hotelId, string roomNumber)
+    public async Task<Room?> GetRoomByHotelAndNumberAsync(Guid hotelId, string roomNumber)
     {
         return await _context.Rooms
             .FirstOrDefaultAsync(r => r.HotelId == hotelId && r.RoomNumber == roomNumber);
@@ -56,5 +57,20 @@ public class RoomRepository : IRoomRepository
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<Room?> GetRoomIfAvailableAsync(Guid roomId, DateTime checkInDate, DateTime checkOutDate)
+    {
+        return await _context.Rooms
+            .Include(r => r.BookingDetails)
+            .ThenInclude(b => b.Booking)
+            .Include(r => r.RoomDiscounts)
+            .ThenInclude(rd => rd.Discount)
+            .FirstOrDefaultAsync(r => r.RoomId == roomId &&
+                                      r.BookingDetails.All(b => 
+                                          b.Booking.Status != BookingStatus.Confirmed ||
+                                          b.CheckOutDate <= checkInDate || 
+                                          b.CheckInDate >= checkOutDate) &&
+                                      r.Availability == true);
     }
 }

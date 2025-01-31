@@ -9,6 +9,6 @@ public class Booking
     public BookingStatus Status { get; set; }
 
     public User User { get; set; }
-    public ICollection<Payment> Payments { get; set; }
+    public Payment Payment { get; set; }
     public ICollection<BookingDetail> BookingDetails { get; set; }
 }

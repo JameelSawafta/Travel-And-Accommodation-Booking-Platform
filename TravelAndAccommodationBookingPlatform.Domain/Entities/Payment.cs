@@ -9,7 +9,7 @@ public class Payment
     public decimal Amount { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public string? TransactionID { get; set; }
-    public DateTime TransactionDate { get; set; } = DateTime.Now;
+    public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
     public PaymentStatus Status { get; set; }
 
     public Booking Booking { get; set; }

@@ -19,6 +19,7 @@ public class TravelAndAccommodationBookingPlatformDbContext : Microsoft.EntityFr
     public DbSet<Owner> Owners { get; set; }
     public DbSet<Image> Images { get; set; }
     public DbSet<BookingDetail> BookingDetails { get; set; }
+    public DbSet<Cart> Carts { get; set; }
     
     public TravelAndAccommodationBookingPlatformDbContext(DbContextOptions<TravelAndAccommodationBookingPlatformDbContext> options) : base(options)
     {

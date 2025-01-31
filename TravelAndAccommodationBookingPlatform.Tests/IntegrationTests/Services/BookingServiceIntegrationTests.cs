@@ -1,11 +1,17 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using PaymentGateway;
+using PayPal.Api;
 using TravelAndAccommodationBookingPlatform.Db.DbContext;
 using TravelAndAccommodationBookingPlatform.Db.DbServices;
 using TravelAndAccommodationBookingPlatform.Db.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Entities;
 using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
+using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
+using TravelAndAccommodationBookingPlatform.Domain.Models;
 using TravelAndAccommodationBookingPlatform.Domain.Models.HotelDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Services;
 
@@ -23,8 +29,15 @@ public class BookingServiceIntegrationTests : IDisposable
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         _dbContext = new TravelAndAccommodationBookingPlatformDbContext(_dbOptions);
-
-        var bookingRepository = new BookingRepository(_dbContext, new PaginationService());
+        
+        var bookingRepository = new BookingRepository(_dbContext);
+        var cartRepository = new CartRepository(_dbContext , new PaginationService());
+        var userRepository = new UserRepository(_dbContext);
+        var roomRepository = new RoomRepository(_dbContext , new PaginationService());
+        var mockPaymentGatewayService = new Mock<IPaymentGatewayService>();
+        mockPaymentGatewayService
+            .Setup(service => service.CreatePaymentAsync(It.IsAny<decimal>(), It.IsAny<string>()))
+            .ReturnsAsync(("https://paypal.com/approval-url", Guid.NewGuid().ToString(), PaymentMethod.PayPal));
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
@@ -34,7 +47,7 @@ public class BookingServiceIntegrationTests : IDisposable
         });
         var mapper = mapperConfig.CreateMapper();
 
-        _bookingService = new BookingService(bookingRepository, mapper);
+        _bookingService = new BookingService(bookingRepository, cartRepository, userRepository, roomRepository, mockPaymentGatewayService.Object, mapper);
     }
 
     public void Dispose()
@@ -97,5 +110,83 @@ public class BookingServiceIntegrationTests : IDisposable
         var userId = Guid.NewGuid();
 
         await Assert.ThrowsAsync<NotFoundException>(() => _bookingService.GetRecentlyVisitedHotelsAsync(userId, 5));
+    }
+    
+    [Fact]
+    public async Task CreateBookingFromCartAsync_ShouldThrowNotFoundException_WhenUserNotFound()
+    {
+        var request = new CheckoutRequestDto { UserId = Guid.NewGuid() };
+        await Assert.ThrowsAsync<NotFoundException>(() => _bookingService.CreateBookingFromCartAsync(request));
+    }
+
+    [Fact]
+    public async Task CreateBookingFromCartAsync_ShouldThrowNotFoundException_WhenCartIsEmpty()
+    {
+        var userId = Guid.NewGuid();
+        _dbContext.Users.Add(new User
+        {
+            UserId = userId,
+            Email = "test@example.com",
+            FirstName = "Test",
+            LastName = "User",
+            PasswordHash = "hashed_password",
+            Salt = "salt_value",
+            Username = "testuser"
+        });
+        await _dbContext.SaveChangesAsync();
+        
+        var request = new CheckoutRequestDto { UserId = userId };
+        await Assert.ThrowsAsync<NotFoundException>(() => _bookingService.CreateBookingFromCartAsync(request));
+    }
+
+    [Fact]
+    public async Task CreateBookingFromCartAsync_ShouldReturnCheckoutDto_WhenBookingIsSuccessful()
+    {
+        var userId = Guid.NewGuid();
+        var roomId = Guid.NewGuid();
+
+        _dbContext.Users.Add(new User
+        {
+            UserId = userId,
+            Email = "test@example.com",
+            FirstName = "Test",
+            LastName = "User",
+            PasswordHash = "hashed_password",
+            Salt = "salt_value",
+            Username = "testuser"
+        });
+
+        _dbContext.Rooms.Add(new Room
+        {
+            RoomId = roomId,
+            RoomNumber = "101",
+            Description = "Standard Room",
+            PricePerNight = 100,
+            Availability = true,
+            BookingDetails = new List<BookingDetail>() 
+        });
+
+        await _dbContext.SaveChangesAsync();
+
+        var checkInDate = DateTime.Now.AddDays(1);
+        var checkOutDate = DateTime.Now.AddDays(3);
+
+        _dbContext.Carts.Add(new Cart
+        {
+            UserId = userId,
+            RoomId = roomId,
+            CheckInDate = checkInDate,
+            CheckOutDate = checkOutDate,
+            Price = 200 // 100 * 2 nights
+        });
+
+        await _dbContext.SaveChangesAsync();
+
+        var request = new CheckoutRequestDto { UserId = userId };
+        var result = await _bookingService.CreateBookingFromCartAsync(request);
+
+        Assert.NotNull(result);
+        Assert.False(string.IsNullOrEmpty(result.approvalUrl));
+        Assert.NotEqual(Guid.Empty, result.PaymentId);
     }
 }
