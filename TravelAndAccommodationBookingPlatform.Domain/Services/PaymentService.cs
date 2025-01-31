@@ -4,6 +4,7 @@ using TravelAndAccommodationBookingPlatform.Domain.Enums;
 using TravelAndAccommodationBookingPlatform.Domain.Exceptions;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Repositories;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
+using TravelAndAccommodationBookingPlatform.Domain.Models.EmailDtos;
 using TravelAndAccommodationBookingPlatform.Domain.Models.PaymentDtos;
 
 namespace TravelAndAccommodationBookingPlatform.Domain.Services;
@@ -13,14 +14,16 @@ public class PaymentService : IPaymentService
     private readonly IPaymentRepository _paymentRepository;
     private readonly IPaymentGatewayService _paymentGatewayService;
     private readonly IInvoiceService _invoiceService;
+    private readonly IEmailService _emailService;
     private readonly IMapper _mapper;
 
     public PaymentService(IPaymentRepository paymentRepository,
-        IPaymentGatewayService paymentGatewayService, IInvoiceService invoiceService, IMapper mapper)
+        IPaymentGatewayService paymentGatewayService, IInvoiceService invoiceService, IEmailService emailService, IMapper mapper)
     {
         _paymentRepository = paymentRepository;
         _paymentGatewayService = paymentGatewayService;
         _invoiceService = invoiceService;
+        _emailService = emailService;
         _mapper = mapper;
     }
 
@@ -31,7 +34,9 @@ public class PaymentService : IPaymentService
         {
             throw new NotFoundException("Payment not found.");
         }
-
+        
+        var emailDto = _mapper.Map<EmailDto>(payment);
+        
         if (payment.Status == PaymentStatus.Success)
         {
             throw new ConflictException("Payment already confirmed.");
@@ -42,7 +47,7 @@ public class PaymentService : IPaymentService
         payment.Booking.Status = BookingStatus.Confirmed;
         payment.Status = PaymentStatus.Success;
         await _paymentRepository.UpdatePaymentAsync(payment);
-        
+        await _emailService.SendEmailAsync(emailDto);
         return _mapper.Map<PaymentResponsetDto>(payment);
     }
 

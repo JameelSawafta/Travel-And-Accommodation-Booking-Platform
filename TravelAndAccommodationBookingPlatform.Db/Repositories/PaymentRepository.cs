@@ -36,6 +36,7 @@ public class PaymentRepository : IPaymentRepository
     {
         return await _context.Payments
             .Include(p => p.Booking)
+            .ThenInclude(b => b.User)
             .FirstOrDefaultAsync(p => p.PaymentId == paymentId);
     }
 

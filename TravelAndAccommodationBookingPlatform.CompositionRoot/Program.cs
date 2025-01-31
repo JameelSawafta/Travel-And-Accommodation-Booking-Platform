@@ -152,10 +152,11 @@ public class Program
         builder.Services.AddScoped<ICartService, CartService>();
         
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-        builder.Services.AddScoped<IPaymentGatewayService, PayPalGatewayService>();
+        builder.Services.AddSingleton<IPaymentGatewayService, PayPalGatewayService>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         
-        builder.Services.AddScoped<IInvoiceService, InvoicePDFService>();
+        builder.Services.AddSingleton<IInvoiceService, InvoicePDFService>();
+        builder.Services.AddSingleton<IEmailService, EmailService.PaymentSuccessfulEmailService>();
         
         builder.Services.AddScoped<IPaginationService, PaginationService>();
         
