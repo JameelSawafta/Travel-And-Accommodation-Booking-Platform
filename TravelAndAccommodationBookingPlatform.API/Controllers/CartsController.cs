@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.AttributeValidators;
 using TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.CartValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.CartDtos;
@@ -29,8 +30,10 @@ public class CartsController : Controller
     /// <response code="201">Returns a response with status code 201 (Created).</response>
     /// <response code="400">If the request is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="403">if the user id in the token does not match the user id in the request</response>
     /// <response code="404">If the user or room is not found.</response>
     /// <response code="409">If there is a date conflict with existing cart items.</response>
+    [ValidateUserId]
     [HttpPost]
     public async Task<IActionResult> AddToCartAsync([FromBody] AddToCartDto cartDto)
     {
@@ -50,7 +53,9 @@ public class CartsController : Controller
     /// <response code="200">Returns a paginated list of cart items.</response>
     /// <response code="400">If the page number or page size is invalid.</response>
     /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="403">if the user id in the token does not match the user id in the request</response>
     /// <response code="404">If the user is not found.</response>
+    [ValidateUserId]
     [HttpGet("{userId}")]
     public async Task<PaginatedList<CartDto>> GetCartItemsAsync(Guid userId, [FromQuery] int pageNumber, [FromQuery] int pageSize)
     {
@@ -78,6 +83,8 @@ public class CartsController : Controller
     /// <returns> A response with status code 204 (No Content).</returns>
     /// <response code="204">Returns a response with status code 204 (No Content).</response>
     /// <response code="401">If the user is not authenticated.</response>
+    /// <response code="403">if the user id in the token does not match the user id in the request</response>
+    [ValidateUserId]
     [HttpDelete("clear/{userId}")]
     public async Task<IActionResult> ClearCartAsync(Guid userId)
     {

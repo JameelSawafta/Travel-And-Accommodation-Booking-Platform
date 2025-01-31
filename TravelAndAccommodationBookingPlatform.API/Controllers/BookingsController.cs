@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.AttributeValidators;
 using TravelAndAccommodationBookingPlatform.API.Validators.ModelsValidators.BookingValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models;
@@ -27,8 +28,10 @@ public class BookingsController : Controller
     /// <returns> the approval url and the booking id </returns>
     /// <response code="200">returns the approval url and the booking id</response>
     /// <response code="401">if the user is not authenticated</response>
+    /// <response code="403">if the user id in the token does not match the user id in the request</response>
     /// <response code="404">if the user id is not valid or the user does not have a cart</response>
     /// <response code="409">if the room is not available for the selected dates</response>
+    [ValidateUserId]
     [HttpPost("checkout")]
     public async Task<CheckoutDto> CheckoutAsync([FromBody] CheckoutRequestDto requestDto)
     {

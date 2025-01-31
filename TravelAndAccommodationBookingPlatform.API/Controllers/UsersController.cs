@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndAccommodationBookingPlatform.API.Validators.AttributeValidators;
 using TravelAndAccommodationBookingPlatform.Domain.Interfaces.Services;
 using TravelAndAccommodationBookingPlatform.Domain.Models.UserDtos;
 
@@ -26,7 +27,9 @@ public class UsersController : Controller
     /// <returns> User details </returns>
     /// <response code="200"> User details </response>
     /// <response code="401"> Unauthorized </response>
+    /// <response code="403">if the user id in the token does not match the user id in the request</response>
     /// <response code="404"> User not found </response>
+    [ValidateUserId]
     [HttpGet("{userId}")]
     public async Task<UserDto> GetUserByIdAsync(Guid userId)
     {
