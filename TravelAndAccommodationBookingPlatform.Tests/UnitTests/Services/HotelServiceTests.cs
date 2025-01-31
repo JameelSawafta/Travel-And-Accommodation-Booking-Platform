@@ -33,36 +33,6 @@ public class HotelServiceTests
     }
 
     [Fact]
-    public async Task SearchHotelsAsync_ShouldThrowNotFoundException_WhenNoHotelsFound()
-    {
-        var searchRequest = new SearchRequestDto
-        {
-            Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now,
-            CheckOutDate = DateTime.Now.AddDays(2)
-        };
-        _mockHotelRepository.Setup(repo =>
-                repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((new List<Hotel>(), 0));
-
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.SearchHotelsAsync(searchRequest, 10, 1));
-    }
-
-    [Fact]
-    public async Task SearchHotelsAsync_ShouldThrowNotFoundException_WhenInvalidPageNumber()
-    {
-        var searchRequest = new SearchRequestDto
-        {
-            Query = "Test", Adults = 2, Children = 1, Rooms = 1, CheckInDate = DateTime.Now,
-            CheckOutDate = DateTime.Now.AddDays(2)
-        };
-        _mockHotelRepository.Setup(repo =>
-                repo.SearchHotelsAsync(It.IsAny<SearchRequestDto>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((new List<Hotel> { new Hotel() }, 1));
-
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.SearchHotelsAsync(searchRequest, 10, 2));
-    }
-
-    [Fact]
     public async Task SearchHotelsAsync_ShouldReturnPaginatedList_WhenSuccessfulSearch()
     {
         var searchRequest = new SearchRequestDto

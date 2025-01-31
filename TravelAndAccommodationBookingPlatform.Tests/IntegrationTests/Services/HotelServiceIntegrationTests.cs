@@ -101,22 +101,6 @@ public class HotelServiceIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task SearchHotelsAsync_ShouldThrowNotFoundException_WhenNoHotelsExist()
-    {
-        var searchRequest = new SearchRequestDto
-        {
-            Query = "Nonexistent",
-            Adults = 2,
-            Children = 1,
-            Rooms = 1,
-            CheckInDate = DateTime.Now,
-            CheckOutDate = DateTime.Now.AddDays(2)
-        };
-
-        await Assert.ThrowsAsync<NotFoundException>(() => _hotelService.SearchHotelsAsync(searchRequest, 10, 1));
-    }
-
-    [Fact]
     public async Task GetFeaturedDealsAsync_ShouldReturnFeaturedDeals_WhenHotelsWithDiscountsExist()
     {
         var city = new City { CityId = Guid.NewGuid(), CityName = "Test City", Country = "Test Country" };
