@@ -43,8 +43,8 @@ public class AuthServiceUnitTests
             .ReturnsAsync(user);
         _passwordServiceMock.Setup(p => p.VerifyPassword(loginDto.Password, user.PasswordHash, Convert.FromBase64String(user.Salt)))
             .Returns(true);
-        _tokenGeneratorServiceMock.Setup(t => t.GenerateToken(user.UserId, user.Username, user.Role))
-            .Returns("valid_token");
+        _tokenGeneratorServiceMock.Setup(t => t.GenerateTokenAsync(user.UserId, user.Username, user.Role))
+            .ReturnsAsync("valid_token");
 
         var token = await _authService.LoginAsync(loginDto);
 
