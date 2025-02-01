@@ -22,18 +22,15 @@ public class TokenIpValidationMiddleware
             if (tokenIp == "Unknown")
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync("Token IP is missing or invalid.");
                 return;
             }
 
             string requestIp = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
-                               ?? context.Connection.RemoteIpAddress?.ToString()
                                ?? "Unknown";
 
             if (requestIp == "Unknown")
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync("Request IP is missing or invalid.");
                 return;
             }
 
@@ -41,7 +38,6 @@ public class TokenIpValidationMiddleware
             if (!requestIp.Equals(tokenIp, StringComparison.OrdinalIgnoreCase))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync("IP mismatch: Access denied.");
                 return;
             }
         }
